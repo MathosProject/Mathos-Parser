@@ -1,0 +1,26 @@
+﻿":" operator should work as a fraction!
+
+
+add an extension method for decimal.Tostring and make the current culture
+
+
+
+ODL
+            /* CONSTRUCTOR */
+            //public MathParser()
+            //    :this(culturInfo: new CultureInfo("en-US"))
+            //{
+            //}
+
+
+TO ADD:
+	Local variables should be able to store arrays ex {}, or ()
+	and retrive the value by varName[index]
+
+	Functions should be able to return an array of decimals
+
+
+	add an eexception when user do not enter two numbers for an operator, ex "5+"
+
+
+
