@@ -527,7 +527,7 @@ namespace Mathos.Parser
                     var op = tokens[0];
 
                     if (op == "-" || op == "+")
-                        return decimal.Parse((op == "+" ? "" : "-") + tokens[1], CultureInfo);
+                        return decimal.Parse((op == "+" ? "" :  (tokens[1].Substring(0,1) == "-" ? "" : "-" ) ) + tokens[1], CultureInfo);
 
                     return OperatorAction[op](0, decimal.Parse(tokens[1], CultureInfo));
                 }
