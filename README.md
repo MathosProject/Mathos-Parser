@@ -1,11 +1,6 @@
 Mathos Parser
 =============
-Mathos Parser (along with Mathos Parser Portable, and Expression Compiler) are currently transferred from CodePlex to GitHub. The old page can be found below:
-* http://mathosparser.codeplex.com/
-
 **Mathos Parser** is a mathematical expression parser, built on top of the .NET Framework, which allows you to parse all kinds of mathematical expressions, and in addition, add your own custom functions, operators, and variables (see the online demo).
-
-NEW: We have launched a new support site, Q&A style: http://support.mathosproject.com/
 
 ##Features
 
