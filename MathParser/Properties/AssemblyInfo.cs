@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Artem Los")]
 [assembly: AssemblyProduct("MathParser")]
-[assembly: AssemblyCopyright("Copyright © 2012-2014 Artem Los")]
+[assembly: AssemblyCopyright("Copyright © 2012-2015 Artem Los")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -27,6 +27,6 @@ using System.Resources;
 // Можно задать все значения или принять номер построения и номер редакции по умолчанию, 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.8.1")]
-[assembly: AssemblyFileVersion("1.0.8.1")]
+[assembly: AssemblyVersion("1.0.10.1")]
+[assembly: AssemblyFileVersion("1.0.10.1")]
 [assembly: NeutralResourcesLanguageAttribute("")]
