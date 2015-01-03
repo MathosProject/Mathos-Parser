@@ -8,7 +8,7 @@ Mathos Parser (along with Mathos Parser Portable, and Expression Compiler) are c
 
 NEW: We have launched a new support site, Q&A style: http://support.mathosproject.com/
 
-Features
+##Features
 
 * Parse all kinds of mathematical expressions.
 * Add conditional statements.
@@ -20,3 +20,8 @@ Features
 * Culture independent. No matter on what machine the library is being used - the same configurations for everyone.
 * Decimal operations.
 * And much more!
+
+##Introduction
+Introduction
+
+Mathos Parser is a part of Mathos Project, a project that provides useful methods, structures, etc, to make the life a little bit easier! This math parser is fully independent of Mathos project, so you can just use this library to archive a powerful math parsing experience.
