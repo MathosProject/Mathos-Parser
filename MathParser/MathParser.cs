@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (C) 2012-2014 Artem Los,
+ * Copyright (C) 2012-2015 Artem Los,
  * All rights reserved.
  * 
  * Please see the license file in the project folder,
@@ -30,7 +30,7 @@ namespace Mathos.Parser
         /// </summary>
         /// <param name="loadPreDefinedFunctions">This will load "abs", "cos", "cosh", "arccos", "sin", "sinh", "arcsin", "tan", "tanh", "arctan", "sqrt", "rem", "round"</param>
         /// <param name="loadPreDefinedOperators">This will load "%", "*", ":", "/", "+", "-", ">", "&lt;", "="</param>
-        /// <param name="loadPreDefinedVariables">This will load "pi" and "e"</param>
+        /// <param name="loadPreDefinedVariables">This will load "pi", "pi2", "pi05", "pi025", "pi0125", "pitograd", "piofgrad", "e", "phi", "major", "minor"</param>
         public MathParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true)
         {
             if (loadPreDefinedOperators)
@@ -309,7 +309,7 @@ namespace Mathos.Parser
         {
             // Word corrections
 
-            input =System.Text.RegularExpressions. Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            input =System.Text.RegularExpressions.Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(atan2|arctan2)\\b", "arctan2", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             //... and more
 
