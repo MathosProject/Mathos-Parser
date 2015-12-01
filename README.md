@@ -33,7 +33,7 @@ It's really easy to use and understand this math parser. In this topic I will tr
 
 ###Adding custom operator
 
-````
+````csharp
 // declaring the parser
 MathParser parser = new MathParser();
 
@@ -50,7 +50,7 @@ parser.OperatorAction.Add("^", delegate(decimal numA, decimal numB)
 Assert.IsTrue(parser.Parse("3^2") == (decimal)Math.Pow (3,2));
 ````
 ###Adding custom function
-````
+````csharp
 public void CustomFunctions()
 {
     /*
@@ -87,7 +87,7 @@ public decimal NumberTimesTwoCustomFunction(decimal[] input)
 }
 ````
 ###Functions with more than one operator
-````
+````csharp
 /*
  * This example demonstrates the "anonymous method" way of adding
  * a function that can take more than one agument.
@@ -119,7 +119,7 @@ decimal resultA = parser.Parse("log(2)");
 decimal resultB = parser.Parse("log(2,3)");
 ````
 ###Programatically add variables
-```
+```csharp
 /* 
 * when parsing an expression that requires 
 * for instance a variable name declaration 
