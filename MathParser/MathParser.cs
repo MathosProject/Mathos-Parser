@@ -1,9 +1,9 @@
 ﻿/* 
- * Copyright (C) 2012-2015 Artem Los,
+ * Copyright (C) 2012-2016 Mathos Project,
  * All rights reserved.
  * 
  * Please see the license file in the project folder,
- * or, goto https://mathosparser.codeplex.com/license.
+ * or, go to https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.
  * 
  * Please feel free to ask me directly at my email!
  *  artem@artemlos.net
@@ -54,17 +54,17 @@ namespace Mathos.Parser
                 // when an operator is executed, the parser needs to know how.
                 // this is how you can add your own operators. note, the order
                 // in this list does not matter.
-                _operatorAction.Add("%", (numberA, numberB) => numberA % numberB);
-                _operatorAction.Add("^", (numberA, numberB) => (decimal)Math.Pow((double)numberA, (double)numberB));
-                _operatorAction.Add(":", (numberA, numberB) => numberA / numberB);
-                _operatorAction.Add("/", (numberA, numberB) => numberA / numberB);
-                _operatorAction.Add("*", (numberA, numberB) => numberA * numberB);
-                _operatorAction.Add("+", (numberA, numberB) => numberA + numberB);
-                _operatorAction.Add("-", (numberA, numberB) => numberA - numberB);
+                OperatorAction.Add("%", (numberA, numberB) => numberA % numberB);
+                OperatorAction.Add("^", (numberA, numberB) => (decimal)Math.Pow((double)numberA, (double)numberB));
+                OperatorAction.Add(":", (numberA, numberB) => numberA / numberB);
+                OperatorAction.Add("/", (numberA, numberB) => numberA / numberB);
+                OperatorAction.Add("*", (numberA, numberB) => numberA * numberB);
+                OperatorAction.Add("+", (numberA, numberB) => numberA + numberB);
+                OperatorAction.Add("-", (numberA, numberB) => numberA - numberB);
 
-                _operatorAction.Add(">", (numberA, numberB) => numberA > numberB ? 1 : 0);
-                _operatorAction.Add("<", (numberA, numberB) => numberA < numberB ? 1 : 0);
-                _operatorAction.Add("=", (numberA, numberB) => numberA == numberB ? 1 : 0);
+                OperatorAction.Add(">", (numberA, numberB) => numberA > numberB ? 1 : 0);
+                OperatorAction.Add("<", (numberA, numberB) => numberA < numberB ? 1 : 0);
+                OperatorAction.Add("=", (numberA, numberB) => numberA == numberB ? 1 : 0);
             }
 
 
@@ -102,6 +102,7 @@ namespace Mathos.Parser
                 LocalFunctions.Add("exp", x => (decimal)Math.Exp((double)x[0]));
                 //LocalFunctions.Add("log", x => (decimal)Math.Log((double)x[0]));
                 //LocalFunctions.Add("log10", x => (decimal)Math.Log10((double)x[0]));
+
                 LocalFunctions.Add("log", delegate(decimal[] input)
                 {
                     // input[0] is the number
@@ -143,60 +144,41 @@ namespace Mathos.Parser
                 LocalVariables.Add("minor", (decimal)0.38196601125010515179541316563436189);
             }
         }
+        
+        #region Properties
 
-
-        /* THE LOCAL VARIABLES */
-        private List<string> _operatorList = new List<string>();
         /// <summary>
         /// All operators should be inside this property.
         /// The first operator is executed first, et cetera.
         /// An operator may only be ONE character.
         /// </summary>
-        public List<string> OperatorList
-        {
-            get { return _operatorList; }
-            set { _operatorList = value; }
-        }
-        private Dictionary<string, Func<decimal, decimal, decimal>> _operatorAction = new Dictionary<string, Func<decimal, decimal, decimal>>();
+        public List<string> OperatorList { get; set; } = new List<string>();
+
         /// <summary>
         /// When adding a variable in the OperatorList property, you need to assign how that operator should work.
         /// </summary>
-        public Dictionary<string, Func<decimal, decimal, decimal>> OperatorAction
-        {
-            get { return _operatorAction; }
-            set { _operatorAction = value; }
-        }
-        private Dictionary<string, Func<decimal[], decimal>> _localFunctions = new Dictionary<string, Func<decimal[], decimal>>();
+        public Dictionary<string, Func<decimal, decimal, decimal>> OperatorAction { get; set; } = new Dictionary<string, Func<decimal, decimal, decimal>>();
+
         /// <summary>
         /// All functions that you want to define should be inside this property.
         /// </summary>
-        public Dictionary<string, Func<decimal[], decimal>> LocalFunctions
-        {
-            get { return _localFunctions; }
-            set { _localFunctions = value; }
-        }
-        private Dictionary<string, decimal> _localVariables = new Dictionary<string, decimal>();
+        public Dictionary<string, Func<decimal[], decimal>> LocalFunctions { get; set; } = new Dictionary<string, Func<decimal[], decimal>>();
+
         /// <summary>
         /// All variables that you want to define should be inside this property.
         /// </summary>
-        public Dictionary<string, decimal> LocalVariables
-        {
-            get { return _localVariables; }
-            set { _localVariables = value; }
-        }
+        public Dictionary<string, decimal> LocalVariables { get; set; } = new Dictionary<string, decimal>();
 
-        private readonly CultureInfo _cultureInfo = CultureInfo.InvariantCulture;
         /// <summary>
         /// When converting the result from the Parse method or ProgrammaticallyParse method ToString(),
         /// please use this cultur info.
         /// </summary>
-        public CultureInfo CultureInfo
-        {
-            get { return _cultureInfo; }
-        }
+        public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
 
+        #endregion
 
-        /* PARSER FUNCTIONS, PUBLIC */
+        #region Public Methods
+
         /// <summary>
         /// Enter the math expression in form of a string.
         /// </summary>
@@ -238,8 +220,7 @@ namespace Mathos.Parser
             }
 
             if (correctExpression)
-                mathExpression = Correction(mathExpression);
-                    // this refers to the Correction function which will correct stuff like artn to arctan, etc.
+                mathExpression = Correction(mathExpression); // this refers to the Correction function which will correct stuff like artn to arctan, etc.
 
             string varName;
             decimal varValue;
@@ -269,7 +250,8 @@ namespace Mathos.Parser
                 return varValue;
             }
 
-            if (!mathExpression.Contains(":=")) return Parse(mathExpression);
+            if (!mathExpression.Contains(":="))
+                return Parse(mathExpression);
             
             //mathExpression = mathExpression.Replace(" ", ""); // remove white space
             varName = mathExpression.Substring(0, mathExpression.IndexOf(":=", StringComparison.Ordinal));
@@ -279,13 +261,9 @@ namespace Mathos.Parser
             varName = varName.Replace(" ", "");
 
             if (LocalVariables.ContainsKey(varName))
-            {
                 LocalVariables[varName] = varValue;
-            }
             else
-            {
                 LocalVariables.Add(varName, varValue);
-            }
 
             return varValue;
         }
@@ -300,6 +278,10 @@ namespace Mathos.Parser
             return Scanner(mathExpression).AsReadOnly();
         }
 
+        #endregion
+
+        #region Core
+
         /// <summary>
         /// This will correct sqrt() and arctan() written in different ways only.
         /// </summary>
@@ -309,15 +291,13 @@ namespace Mathos.Parser
         {
             // Word corrections
 
-            input =System.Text.RegularExpressions.Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(atan2|arctan2)\\b", "arctan2", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             //... and more
 
             return input;
         }
-
-
-        /* UNDER THE HOOD - THE CORE OF THE PARSER */
+        
         private List<string> Scanner(string expr)
         {
             // SCANNING THE INPUT STRING AND CONVERT IT INTO TOKENS
@@ -341,16 +321,16 @@ namespace Mathos.Parser
                 var ch = expr[i];
 
                 if (char.IsWhiteSpace(ch)) { } // could also be used to remove white spaces.
-                else if (Char.IsLetter(ch))
+                else if (char.IsLetter(ch))
                 {
-                    if (i != 0 && (Char.IsDigit(expr[i - 1]) || Char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
+                    if (i != 0 && (char.IsDigit(expr[i - 1]) || char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                     {
                         tokens.Add("*");
                     }
 
                     vector = vector + ch;
                     
-                    while ((i + 1) < expr.Length && Char.IsLetterOrDigit(expr[i + 1])) // here is it is possible to choose whether you want variables that only contain letters with or without digits.
+                    while ((i + 1) < expr.Length && char.IsLetterOrDigit(expr[i + 1])) // here is it is possible to choose whether you want variables that only contain letters with or without digits.
                     {
                         i++;
                         vector = vector + expr[i];
@@ -359,11 +339,11 @@ namespace Mathos.Parser
                     tokens.Add(vector);
                     vector = "";
                 }
-                else if (Char.IsDigit(ch))
+                else if (char.IsDigit(ch))
                 {
                     vector = vector + ch;
                     
-                    while ((i + 1) < expr.Length && (Char.IsDigit(expr[i + 1]) || expr[i + 1] == '.')) // removed || _expr[i + 1] == ','
+                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.')) // removed || _expr[i + 1] == ','
                     {
                         i++;
                         vector = vector + expr[i];
@@ -372,7 +352,7 @@ namespace Mathos.Parser
                     tokens.Add(vector);
                     vector = "";
                 }
-                else if ((i + 1) < expr.Length && (ch == '-' || ch == '+') && Char.IsDigit(expr[i + 1]) && (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo.InvariantCulture)) != -1 || ((i - 1) > 0 && expr[i - 1] == '(')))
+                else if ((i + 1) < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) && (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo.InvariantCulture)) != -1 || ((i - 1) > 0 && expr[i - 1] == '(')))
                 {
                     // if the above is true, then, the token for that negative number will be "-1", not "-","1".
                     // to sum up, the above will be true if the minus sign is in front of the number, but
@@ -380,7 +360,7 @@ namespace Mathos.Parser
                     // NOTE: this works for + sign as well!
                     vector = vector + ch;
 
-                    while ((i + 1) < expr.Length && (Char.IsDigit(expr[i + 1]) || expr[i + 1] == '.')) // removed || _expr[i + 1] == ','
+                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.')) // removed || _expr[i + 1] == ','
                     {
                         i++;
                         vector = vector + expr[i];
@@ -391,19 +371,17 @@ namespace Mathos.Parser
                 }
                 else if (ch == '(')
                 {
-                    if (i != 0 && (Char.IsDigit(expr[i - 1]) || Char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
+                    if (i != 0 && (char.IsDigit(expr[i - 1]) || char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                     {
                         tokens.Add("*");
-                        // if we remove this line(above), we would be able to have numbers in function names. however, then we can't parser 3(2+2)
+                        // if we remove this line(above), we would be able to have numbers in function names. however, then we can't parse 3(2+2).
                         tokens.Add("(");
                     }
                     else
                         tokens.Add("(");
                 }
                 else
-                {
                     tokens.Add(ch.ToString());
-                }
             }
 
             return tokens;
@@ -419,10 +397,9 @@ namespace Mathos.Parser
             for (var i = 0; i < tokens.Count; i++)
             {
                 if (LocalVariables.Keys.Contains(tokens[i]))
-                {
                     tokens[i] = LocalVariables[tokens[i]].ToString(CultureInfo);
-                }
             }
+
             while (tokens.IndexOf("(") != -1)
             {
                 // getting data between "(", ")"
@@ -430,23 +407,19 @@ namespace Mathos.Parser
                 var close = tokens.IndexOf(")", open); // in case open is -1, i.e. no "(" // , open == 0 ? 0 : open - 1
 
                 if (open >= close)
-                {
-                    // if there is no closing bracket, throw a new exception
-                    throw new ArithmeticException("No closing bracket/parenthesis! tkn: " + open.ToString(CultureInfo.InvariantCulture));
-                }
-                
+                    throw new ArithmeticException("No closing bracket/parenthesis! tkn: " +
+                                                  open.ToString(CultureInfo.InvariantCulture));
+
                 var roughExpr = new List<string>();
-                
+
                 for (var i = open + 1; i < close; i++)
-                {
                     roughExpr.Add(tokens[i]);
-                }
 
                 decimal result; // the temporary result is stored here
 
                 var functioName = tokens[open == 0 ? 0 : open - 1];
                 var args = new decimal[0];
-                
+
                 if (LocalFunctions.Keys.Contains(functioName))
                 {
                     if (roughExpr.Contains(","))
@@ -454,7 +427,9 @@ namespace Mathos.Parser
                         // converting all arguments into a decimal array
                         for (var i = 0; i < roughExpr.Count; i++)
                         {
-                            var firstCommaOrEndOfExpression = roughExpr.IndexOf(",", i) != -1 ? roughExpr.IndexOf(",", i) : roughExpr.Count;
+                            var firstCommaOrEndOfExpression = roughExpr.IndexOf(",", i) != -1
+                                ? roughExpr.IndexOf(",", i)
+                                : roughExpr.Count;
                             var defaultExpr = new List<string>();
 
                             while (i < firstCommaOrEndOfExpression)
@@ -465,15 +440,11 @@ namespace Mathos.Parser
 
                             // changing the size of the array of arguments
                             Array.Resize(ref args, args.Length + 1);
-                            
+
                             if (defaultExpr.Count == 0)
-                            {
                                 args[args.Length - 1] = 0;
-                            }
                             else
-                            {
                                 args[args.Length - 1] = BasicArithmeticalExpression(defaultExpr);
-                            }
                         }
 
                         // finnaly, passing the arguments to the given function
@@ -482,7 +453,10 @@ namespace Mathos.Parser
                     else
                     {
                         // but if we only have one argument, then we pass it directly to the function
-                        result = decimal.Parse(LocalFunctions[functioName](new[] { BasicArithmeticalExpression(roughExpr) }).ToString(CultureInfo), CultureInfo);
+                        result =
+                            decimal.Parse(
+                                LocalFunctions[functioName](new[] {BasicArithmeticalExpression(roughExpr)})
+                                    .ToString(CultureInfo), CultureInfo);
                     }
                 }
                 else
@@ -497,6 +471,7 @@ namespace Mathos.Parser
                 // and removing the rest.
                 tokens[open] = result.ToString(CultureInfo);
                 tokens.RemoveRange(open + 1, close - open);
+
                 if (LocalFunctions.Keys.Contains(functioName))
                 {
                     // if we also executed a function, removing
@@ -523,14 +498,16 @@ namespace Mathos.Parser
                 case 1:
                     return decimal.Parse(tokens[0], CultureInfo);
                 case 2:
-                {
                     var op = tokens[0];
 
                     if (op == "-" || op == "+")
-                        return decimal.Parse((op == "+" ? "" :  (tokens[1].Substring(0,1) == "-" ? "" : "-" ) ) + tokens[1], CultureInfo);
+                    {
+                        return
+                            decimal.Parse((op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-")) + tokens[1],
+                                CultureInfo);
+                    }
 
                     return OperatorAction[op](0, decimal.Parse(tokens[1], CultureInfo));
-                }
                 case 0:
                     return 0;
             }
@@ -550,7 +527,10 @@ namespace Mathos.Parser
                     tokens.RemoveRange(opPlace, 2);
                 }
             }
+
             return Convert.ToDecimal(tokens[0], CultureInfo);
         }
+
+        #endregion
     }
 }
