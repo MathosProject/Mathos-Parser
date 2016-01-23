@@ -54,11 +54,11 @@ namespace Mathos.Parser
                 // when an operator is executed, the parser needs to know how.
                 // this is how you can add your own operators. note, the order
                 // in this list does not matter.
-                OperatorAction.Add("%", (numberA, numberB) => numberA % numberB);
-                OperatorAction.Add("^", (numberA, numberB) => (decimal)Math.Pow((double)numberA, (double)numberB));
-                OperatorAction.Add(":", (numberA, numberB) => numberA / numberB);
-                OperatorAction.Add("/", (numberA, numberB) => numberA / numberB);
-                OperatorAction.Add("*", (numberA, numberB) => numberA * numberB);
+                OperatorAction.Add("%", (numberA, numberB) => numberA%numberB);
+                OperatorAction.Add("^", (numberA, numberB) => (decimal) Math.Pow((double) numberA, (double) numberB));
+                OperatorAction.Add(":", (numberA, numberB) => numberA/numberB);
+                OperatorAction.Add("/", (numberA, numberB) => numberA/numberB);
+                OperatorAction.Add("*", (numberA, numberB) => numberA*numberB);
                 OperatorAction.Add("+", (numberA, numberB) => numberA + numberB);
                 OperatorAction.Add("-", (numberA, numberB) => numberA - numberB);
 
@@ -78,28 +78,28 @@ namespace Mathos.Parser
                 // a new function to this variable!
                 // EACH FUNCTION MAY ONLY TAKE ONE PARAMETER, AND RETURN ONE
                 // VALUE. THESE VALUES SHOULD BE IN "DECIMAL FORMAT"!
-                LocalFunctions.Add("abs", x => (decimal)Math.Abs((double)x[0]));
+                LocalFunctions.Add("abs", x => (decimal) Math.Abs((double) x[0]));
 
-                LocalFunctions.Add("cos", x => (decimal)Math.Cos((double)x[0]));
-                LocalFunctions.Add("cosh", x => (decimal)Math.Cosh((double)x[0]));
-                LocalFunctions.Add("arccos", x => (decimal)Math.Acos((double)x[0]));
+                LocalFunctions.Add("cos", x => (decimal) Math.Cos((double) x[0]));
+                LocalFunctions.Add("cosh", x => (decimal) Math.Cosh((double) x[0]));
+                LocalFunctions.Add("arccos", x => (decimal) Math.Acos((double) x[0]));
 
-                LocalFunctions.Add("sin", x => (decimal)Math.Sin((double)x[0]));
-                LocalFunctions.Add("sinh", x => (decimal)Math.Sinh((double)x[0]));
-                LocalFunctions.Add("arcsin", x => (decimal)Math.Asin((double)x[0]));
+                LocalFunctions.Add("sin", x => (decimal) Math.Sin((double) x[0]));
+                LocalFunctions.Add("sinh", x => (decimal) Math.Sinh((double) x[0]));
+                LocalFunctions.Add("arcsin", x => (decimal) Math.Asin((double) x[0]));
 
-                LocalFunctions.Add("tan", x => (decimal)Math.Tan((double)x[0]));
-                LocalFunctions.Add("tanh", x => (decimal)Math.Tanh((double)x[0]));
-                LocalFunctions.Add("arctan", x => (decimal)Math.Atan((double)x[0]));
+                LocalFunctions.Add("tan", x => (decimal) Math.Tan((double) x[0]));
+                LocalFunctions.Add("tanh", x => (decimal) Math.Tanh((double) x[0]));
+                LocalFunctions.Add("arctan", x => (decimal) Math.Atan((double) x[0]));
                 //LocalFunctions.Add("arctan2", x => (decimal)Math.Atan2((double)x[0], (double)x[1]));
 
-                LocalFunctions.Add("sqrt", x => (decimal)Math.Sqrt((double)x[0]));
-                LocalFunctions.Add("rem", x => (decimal)Math.IEEERemainder((double)x[0], (double)x[1]));
-                LocalFunctions.Add("root", x => (decimal)Math.Pow((double)x[0], 1.0 / (double)x[1]));
+                LocalFunctions.Add("sqrt", x => (decimal) Math.Sqrt((double) x[0]));
+                LocalFunctions.Add("rem", x => (decimal) Math.IEEERemainder((double) x[0], (double) x[1]));
+                LocalFunctions.Add("root", x => (decimal) Math.Pow((double) x[0], 1.0/(double) x[1]));
 
-                LocalFunctions.Add("pow", x => (decimal)Math.Pow((double)x[0], (double)x[1]));
+                LocalFunctions.Add("pow", x => (decimal) Math.Pow((double) x[0], (double) x[1]));
 
-                LocalFunctions.Add("exp", x => (decimal)Math.Exp((double)x[0]));
+                LocalFunctions.Add("exp", x => (decimal) Math.Exp((double) x[0]));
                 //LocalFunctions.Add("log", x => (decimal)Math.Log((double)x[0]));
                 //LocalFunctions.Add("log10", x => (decimal)Math.Log10((double)x[0]));
 
@@ -111,40 +111,40 @@ namespace Mathos.Parser
                     switch (input.Length)
                     {
                         case 1:
-                            return (decimal)Math.Log((double)input[0]);
+                            return (decimal) Math.Log((double) input[0]);
                         case 2:
-                            return (decimal)Math.Log((double)input[0], (double)input[1]);
+                            return (decimal) Math.Log((double) input[0], (double) input[1]);
                         default:
                             return 0; // false
                     }
                 });
 
-                LocalFunctions.Add("round", x => (decimal)Math.Round((double)x[0]));
-                LocalFunctions.Add("truncate", x => (decimal)(x[0] < 0.0m ? -Math.Floor(-(double)x[0]) : Math.Floor((double)x[0])));
-                LocalFunctions.Add("floor", x => (decimal)Math.Floor((double)x[0]));
-                LocalFunctions.Add("ceiling", x => (decimal)Math.Ceiling((double)x[0]));
-                LocalFunctions.Add("sign", x => (decimal)Math.Sign((double)x[0]));
-
+                LocalFunctions.Add("round", x => (decimal) Math.Round((double) x[0]));
+                LocalFunctions.Add("truncate",
+                    x => (decimal) (x[0] < 0.0m ? -Math.Floor(-(double) x[0]) : Math.Floor((double) x[0])));
+                LocalFunctions.Add("floor", x => (decimal) Math.Floor((double) x[0]));
+                LocalFunctions.Add("ceiling", x => (decimal) Math.Ceiling((double) x[0]));
+                LocalFunctions.Add("sign", x => (decimal) Math.Sign((double) x[0]));
             }
 
             if (loadPreDefinedVariables)
             {
                 // local variables such as pi can also be added into the parser.
-                LocalVariables.Add("pi", (decimal)3.14159265358979323846264338327950288); // the simplest variable!
-                LocalVariables.Add("pi2", (decimal)6.28318530717958647692528676655900576);
-                LocalVariables.Add("pi05", (decimal)1.57079632679489661923132169163975144);
-                LocalVariables.Add("pi025", (decimal)0.78539816339744830961566084581987572);
-                LocalVariables.Add("pi0125", (decimal)0.39269908169872415480783042290993786);
-                LocalVariables.Add("pitograd", (decimal)57.2957795130823208767981548141051704);
-                LocalVariables.Add("piofgrad", (decimal)0.01745329251994329576923690768488612);
+                LocalVariables.Add("pi", (decimal) 3.14159265358979323846264338327950288); // the simplest variable!
+                LocalVariables.Add("pi2", (decimal) 6.28318530717958647692528676655900576);
+                LocalVariables.Add("pi05", (decimal) 1.57079632679489661923132169163975144);
+                LocalVariables.Add("pi025", (decimal) 0.78539816339744830961566084581987572);
+                LocalVariables.Add("pi0125", (decimal) 0.39269908169872415480783042290993786);
+                LocalVariables.Add("pitograd", (decimal) 57.2957795130823208767981548141051704);
+                LocalVariables.Add("piofgrad", (decimal) 0.01745329251994329576923690768488612);
 
-                LocalVariables.Add("e", (decimal)2.71828182845904523536028747135266249);
-                LocalVariables.Add("phi", (decimal)1.61803398874989484820458683436563811);
-                LocalVariables.Add("major", (decimal)0.61803398874989484820458683436563811);
-                LocalVariables.Add("minor", (decimal)0.38196601125010515179541316563436189);
+                LocalVariables.Add("e", (decimal) 2.71828182845904523536028747135266249);
+                LocalVariables.Add("phi", (decimal) 1.61803398874989484820458683436563811);
+                LocalVariables.Add("major", (decimal) 0.61803398874989484820458683436563811);
+                LocalVariables.Add("minor", (decimal) 0.38196601125010515179541316563436189);
             }
         }
-        
+
         #region Properties
 
         /// <summary>
@@ -157,12 +157,14 @@ namespace Mathos.Parser
         /// <summary>
         /// When adding a variable in the OperatorList property, you need to assign how that operator should work.
         /// </summary>
-        public Dictionary<string, Func<decimal, decimal, decimal>> OperatorAction { get; set; } = new Dictionary<string, Func<decimal, decimal, decimal>>();
+        public Dictionary<string, Func<decimal, decimal, decimal>> OperatorAction { get; set; } =
+            new Dictionary<string, Func<decimal, decimal, decimal>>();
 
         /// <summary>
         /// All functions that you want to define should be inside this property.
         /// </summary>
-        public Dictionary<string, Func<decimal[], decimal>> LocalFunctions { get; set; } = new Dictionary<string, Func<decimal[], decimal>>();
+        public Dictionary<string, Func<decimal[], decimal>> LocalFunctions { get; set; } =
+            new Dictionary<string, Func<decimal[], decimal>>();
 
         /// <summary>
         /// All variables that you want to define should be inside this property.
@@ -215,31 +217,39 @@ namespace Mathos.Parser
         {
             if (identifyComments)
             {
-                mathExpression = System.Text.RegularExpressions.Regex.Replace(mathExpression, "#\\{.*?\\}#", ""); // Delete Comments #{Comment}#
-                mathExpression = System.Text.RegularExpressions.Regex.Replace(mathExpression, "#.*$", ""); // Delete Comments #Comment
+                mathExpression = System.Text.RegularExpressions.Regex.Replace(mathExpression, "#\\{.*?\\}#", "");
+                    // Delete Comments #{Comment}#
+                mathExpression = System.Text.RegularExpressions.Regex.Replace(mathExpression, "#.*$", "");
+                    // Delete Comments #Comment
             }
 
             if (correctExpression)
-                mathExpression = Correction(mathExpression); // this refers to the Correction function which will correct stuff like artn to arctan, etc.
+                mathExpression = Correction(mathExpression);
+                    // this refers to the Correction function which will correct stuff like artn to arctan, etc.
 
             string varName;
             decimal varValue;
+
             if (mathExpression.Contains("let"))
             {
                 if (mathExpression.Contains("be"))
                 {
-                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3, mathExpression.IndexOf("be", StringComparison.Ordinal) - mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
+                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3,
+                        mathExpression.IndexOf("be", StringComparison.Ordinal) -
+                        mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
                     mathExpression = mathExpression.Replace(varName + "be", "");
                 }
                 else
                 {
-                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3, mathExpression.IndexOf("=", StringComparison.Ordinal) - mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
+                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3,
+                        mathExpression.IndexOf("=", StringComparison.Ordinal) -
+                        mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
                     mathExpression = mathExpression.Replace(varName + "=", "");
                 }
 
                 varName = varName.Replace(" ", "");
                 mathExpression = mathExpression.Replace("let", "");
-                
+
                 varValue = Parse(mathExpression);
 
                 if (LocalVariables.ContainsKey(varName))
@@ -252,7 +262,7 @@ namespace Mathos.Parser
 
             if (!mathExpression.Contains(":="))
                 return Parse(mathExpression);
-            
+
             //mathExpression = mathExpression.Replace(" ", ""); // remove white space
             varName = mathExpression.Substring(0, mathExpression.IndexOf(":=", StringComparison.Ordinal));
             mathExpression = mathExpression.Replace(varName + ":=", "");
@@ -291,36 +301,37 @@ namespace Mathos.Parser
         {
             // Word corrections
 
-            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(atan2|arctan2)\\b", "arctan2", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(atan2|arctan2)\\b", "arctan2",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             //... and more
 
             return input;
         }
         
+        /// <summary>
+        /// Scanning the <paramref name="expr"/> and convert it into tokens.
+        /// </summary>
+        /// <param name="expr"></param>
+        /// <returns></returns>
         private List<string> Scanner(string expr)
         {
-            // SCANNING THE INPUT STRING AND CONVERT IT INTO TOKENS
-
             var tokens = new List<string>();
             var vector = "";
 
-            //_expr = _expr.Replace(" ", ""); // remove white space
-            expr = expr.Replace("+-", "-"); // some basic arithmetical rules
+            expr = expr.Replace("+-", "-");
             expr = expr.Replace("-+", "-");
             expr = expr.Replace("--", "+");
-
-           /* foreach (var item in LocalVariables)
-            {
-                // replace the current variables with their value
-                _expr = _expr.Replace(item.Key, "(" + item.Value.ToString(CULTURE_INFO) + ")");
-            }*/
 
             for (var i = 0; i < expr.Length; i++)
             {
                 var ch = expr[i];
-
-                if (char.IsWhiteSpace(ch)) { } // could also be used to remove white spaces.
+                
+                if (char.IsWhiteSpace(ch))
+                {
+                    // should be used to remove whitespace.
+                }
                 else if (char.IsLetter(ch))
                 {
                     if (i != 0 && (char.IsDigit(expr[i - 1]) || char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
@@ -328,42 +339,45 @@ namespace Mathos.Parser
                         tokens.Add("*");
                     }
 
-                    vector = vector + ch;
-                    
-                    while ((i + 1) < expr.Length && char.IsLetterOrDigit(expr[i + 1])) // here is it is possible to choose whether you want variables that only contain letters with or without digits.
+                    vector += ch;
+
+                    // here is it is possible to choose whether you want variables that only contain letters with or without digits.
+                    while ((i + 1) < expr.Length && char.IsLetterOrDigit(expr[i + 1]))
                     {
                         i++;
-                        vector = vector + expr[i];
+                        vector += expr[i];
                     }
-                    
+
                     tokens.Add(vector);
                     vector = "";
                 }
                 else if (char.IsDigit(ch))
                 {
-                    vector = vector + ch;
-                    
-                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.')) // removed || _expr[i + 1] == ','
+                    vector += ch;
+
+                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
                     {
                         i++;
-                        vector = vector + expr[i];
+                        vector += expr[i];
                     }
-                    
+
                     tokens.Add(vector);
                     vector = "";
                 }
-                else if ((i + 1) < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) && (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo.InvariantCulture)) != -1 || ((i - 1) > 0 && expr[i - 1] == '(')))
+                else if ((i + 1) < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
+                         (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo.InvariantCulture)) != -1 ||
+                          ((i - 1) > 0 && expr[i - 1] == '(')))
                 {
                     // if the above is true, then, the token for that negative number will be "-1", not "-","1".
                     // to sum up, the above will be true if the minus sign is in front of the number, but
                     // at the beginning, for example, -1+2, or, when it is inside the brakets (-1).
                     // NOTE: this works for + sign as well!
-                    vector = vector + ch;
+                    vector += ch;
 
-                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.')) // removed || _expr[i + 1] == ','
+                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
                     {
                         i++;
-                        vector = vector + expr[i];
+                        vector += expr[i];
                     }
 
                     tokens.Add(vector);
@@ -373,8 +387,8 @@ namespace Mathos.Parser
                 {
                     if (i != 0 && (char.IsDigit(expr[i - 1]) || char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                     {
+                        // if we remove this line(below), we would be able to have numbers in function names. however, then we can't parse 3(2+2).
                         tokens.Add("*");
-                        // if we remove this line(above), we would be able to have numbers in function names. however, then we can't parse 3(2+2).
                         tokens.Add("(");
                     }
                     else
@@ -385,7 +399,6 @@ namespace Mathos.Parser
             }
 
             return tokens;
-            //return MathParserLogic(_tokens);
         }
 
         private decimal MathParserLogic(List<string> tokens)
@@ -402,20 +415,22 @@ namespace Mathos.Parser
 
             while (tokens.IndexOf("(") != -1)
             {
-                // getting data between "(", ")"
+                // getting data between "(" and ")"
                 var open = tokens.LastIndexOf("(");
                 var close = tokens.IndexOf(")", open); // in case open is -1, i.e. no "(" // , open == 0 ? 0 : open - 1
 
                 if (open >= close)
+                {
                     throw new ArithmeticException("No closing bracket/parenthesis! tkn: " +
                                                   open.ToString(CultureInfo.InvariantCulture));
+                }
 
                 var roughExpr = new List<string>();
 
                 for (var i = open + 1; i < close; i++)
                     roughExpr.Add(tokens[i]);
 
-                decimal result; // the temporary result is stored here
+                decimal tmpResult;
 
                 var functioName = tokens[open == 0 ? 0 : open - 1];
                 var args = new decimal[0];
@@ -427,10 +442,10 @@ namespace Mathos.Parser
                         // converting all arguments into a decimal array
                         for (var i = 0; i < roughExpr.Count; i++)
                         {
-                            var firstCommaOrEndOfExpression = roughExpr.IndexOf(",", i) != -1
+                            var defaultExpr = new List<string>();
+                            var firstCommaOrEndOfExpression = (roughExpr.IndexOf(",", i) != -1)
                                 ? roughExpr.IndexOf(",", i)
                                 : roughExpr.Count;
-                            var defaultExpr = new List<string>();
 
                             while (i < firstCommaOrEndOfExpression)
                             {
@@ -441,19 +456,18 @@ namespace Mathos.Parser
                             // changing the size of the array of arguments
                             Array.Resize(ref args, args.Length + 1);
 
-                            if (defaultExpr.Count == 0)
-                                args[args.Length - 1] = 0;
-                            else
-                                args[args.Length - 1] = BasicArithmeticalExpression(defaultExpr);
+                            args[args.Length - 1] = (defaultExpr.Count == 0)
+                                ? 0
+                                : BasicArithmeticalExpression(defaultExpr);
                         }
 
                         // finnaly, passing the arguments to the given function
-                        result = decimal.Parse(LocalFunctions[functioName](args).ToString(CultureInfo), CultureInfo);
+                        tmpResult = decimal.Parse(LocalFunctions[functioName](args).ToString(CultureInfo), CultureInfo);
                     }
                     else
                     {
                         // but if we only have one argument, then we pass it directly to the function
-                        result =
+                        tmpResult =
                             decimal.Parse(
                                 LocalFunctions[functioName](new[] {BasicArithmeticalExpression(roughExpr)})
                                     .ToString(CultureInfo), CultureInfo);
@@ -463,13 +477,13 @@ namespace Mathos.Parser
                 {
                     // if no function is need to execute following expression, pass it
                     // to the "BasicArithmeticalExpression" method.
-                    result = BasicArithmeticalExpression(roughExpr);
+                    tmpResult = BasicArithmeticalExpression(roughExpr);
                 }
 
                 // when all the calculations have been done
                 // we replace the "opening bracket with the result"
                 // and removing the rest.
-                tokens[open] = result.ToString(CultureInfo);
+                tokens[open] = tmpResult.ToString(CultureInfo);
                 tokens.RemoveRange(open + 1, close - open);
 
                 if (LocalFunctions.Keys.Contains(functioName))
