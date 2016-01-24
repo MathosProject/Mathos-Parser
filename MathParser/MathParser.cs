@@ -217,15 +217,18 @@ namespace Mathos.Parser
         {
             if (identifyComments)
             {
+                // Delete Comments #{Comment}#
                 mathExpression = System.Text.RegularExpressions.Regex.Replace(mathExpression, "#\\{.*?\\}#", "");
-                    // Delete Comments #{Comment}#
+
+                // Delete Comments #Comment
                 mathExpression = System.Text.RegularExpressions.Regex.Replace(mathExpression, "#.*$", "");
-                    // Delete Comments #Comment
             }
 
             if (correctExpression)
+            {
+                // this refers to the Correction function which will correct stuff like artn to arctan, etc.
                 mathExpression = Correction(mathExpression);
-                    // this refers to the Correction function which will correct stuff like artn to arctan, etc.
+            }
 
             string varName;
             decimal varValue;

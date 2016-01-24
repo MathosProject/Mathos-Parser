@@ -11,7 +11,6 @@ namespace MathosTest
     [TestClass]
     public class MathParserTest
     {
-
         [TestMethod]
         public void BasicArithmetics()
         {
@@ -23,7 +22,7 @@ namespace MathosTest
             decimal resultB = parser.Parse("5+2*3");
             Assert.IsTrue(resultB == 11);
         }
-
+        
         [TestMethod]
         public void AdvancedArithmetics()
         {
