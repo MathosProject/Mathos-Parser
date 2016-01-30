@@ -17,19 +17,19 @@ namespace MathosTest
             MathParser parser = new MathParser();
 
             double resultA = parser.Parse("5+2");
-            Assert.IsTrue(resultA == 7);
+            Assert.AreEqual(resultA, 7);
 
             double resultB = parser.Parse("5+2*3");
-            Assert.IsTrue(resultB == 11);
+            Assert.AreEqual(resultB, 11);
         }
         
         [TestMethod]
         public void AdvancedArithmetics()
         {
             MathParser parser = new MathParser();
-            double resultA = parser.Parse("(2+3)(3+1)");
-            Assert.IsTrue(resultA == 20);
 
+            double resultA = parser.Parse("(2+3)(3+1)");
+            Assert.AreEqual(resultA, 20);
         }
 
         [TestMethod]
@@ -38,12 +38,10 @@ namespace MathosTest
             MathParser parser = new MathParser();
 
             double resultA = parser.Parse("2+3=1+4");
-            Assert.IsTrue(resultA == 1);
+            Assert.AreEqual(resultA, 1);
 
             double resultB = parser.Parse("3+2>(2-1)");
-            Assert.IsTrue(resultB == 1);
-
-
+            Assert.AreEqual(resultB, 1);
         }
 
         [TestMethod]
@@ -58,15 +56,15 @@ namespace MathosTest
 
             // first way, using let varname = value
             double resultA = parser.ProgrammaticallyParse("let a = 2pi");
-            Assert.IsTrue(parser.Parse("a") == (double)Math.PI * 2);
+            Assert.AreEqual(parser.Parse("a"), Math.PI * 2);
 
             // second way, using varname :=  value
             double resultC = parser.ProgrammaticallyParse("b := 20");
-            Assert.IsTrue(parser.Parse("b") == 20);
+            Assert.AreEqual(parser.Parse("b"), 20);
 
             // third way, using let varname be value
             double resultD = parser.ProgrammaticallyParse("let c be 25");
-            Assert.IsTrue(resultD == 25);
+            Assert.AreEqual(resultD, 25);
         }
 
         [TestMethod]
@@ -100,6 +98,7 @@ namespace MathosTest
             double resultC = parser.Parse("cube(2)");
 
         }
+
         public double NumberTimesTwoCustomFunction(double[] input)
         {
             return input[0] * 2;
@@ -113,7 +112,7 @@ namespace MathosTest
              * a function that can take more than one agument.
              */
 
-            MathParser parser = new MathParser(loadPreDefinedFunctions: false);
+            MathParser parser = new MathParser(false);
 
             //for long functions
             parser.LocalFunctions.Add("log", delegate(double[] input) // adding the function
@@ -123,11 +122,11 @@ namespace MathosTest
 
                 if (input.Length == 1)
                 {
-                    return (double)Math.Log((double)input[0]);
+                    return Math.Log(input[0]);
                 }
                 else if (input.Length == 2)
                 {
-                    return (double)Math.Log((double)input[0], (double)input[1]);
+                    return Math.Log(input[0], input[1]);
                 }
                 else
                 {
@@ -146,23 +145,23 @@ namespace MathosTest
             MathParser parser = new MathParser();
 
             double resultA = parser.Parse("-1+1");
-            Assert.IsTrue(resultA == 0);
+            Assert.AreEqual(resultA, 0);
 
             double resultB = parser.Parse("--1");
-            Assert.IsTrue(resultB == 1);
+            Assert.AreEqual(resultB, 1);
 
             double resultC = parser.Parse("(-2)");
-            Assert.IsTrue(resultC == -2);
+            Assert.AreEqual(resultC, -2);
 
             double resultD = parser.Parse("(-2)(-2)");
-            Assert.IsTrue(resultD == 4);
+            Assert.AreEqual(resultD, 4);
         }
 
         [TestMethod]
         public void Trigemoetry()
         {
             MathParser parser = new MathParser();
-            Assert.IsTrue(parser.Parse("cos(32) + 3") == (double)Math.Cos(32) + 3);
+            Assert.AreEqual(parser.Parse("cos(32) + 3"), Math.Cos(32) + 3);
         }
 
         [TestMethod]
@@ -172,7 +171,7 @@ namespace MathosTest
             MathParser parser = new MathParser();
 
             //customize the operator list
-            parser.OperatorList = new List<string>() { "$", "%", "*", ":", "/", "+", "-", ">", "<", "=" };
+            parser.OperatorList = new List<string> { "$", "%", "*", ":", "/", "+", "-", ">", "<", "=" };
 
             // adding "dollar operator" to the OperatorAction list
             parser.OperatorAction.Add("$", delegate(double numA, double numB)
@@ -181,7 +180,7 @@ namespace MathosTest
             });
 
             // parsing and comparing
-            Assert.IsTrue(parser.Parse("3$2") == 3 * 2 + 3 * 2);
+            Assert.AreEqual(parser.Parse("3$2"), 3 * 2 + 3 * 2);
         }
 
         [TestMethod]
@@ -195,19 +194,9 @@ namespace MathosTest
             MathParser parserDefault = new MathParser(); // or new MathParser(new CultureInfo("en-US"))
             double resultC = parserDefault.Parse("0.245 + 0.3");
             double resultD = parserDefault.Parse("-0.245 + 0.3");
-            Assert.IsTrue(resultD == double.Parse("0.055", parserDefault.CultureInfo));
+            Assert.AreEqual(resultD, double.Parse("0.055", parserDefault.CultureInfo));
         }
-
-        [TestMethod]
-        public void DifferentCultures()
-        {
-            MathParser parser = new MathParser();
-
-        }
-        void funcs(double[] arg)
-        {
-        }
-
+        
         [TestMethod]
         public void ExecutionTime()
         {
@@ -221,13 +210,12 @@ namespace MathosTest
             _timer.Stop();
 
             Debug.WriteLine("time to parser with MathParser: " + _timer.ElapsedMilliseconds);
-
         }
 
         [TestMethod]
         public void BuiltInFunctions()
         {
-            MathParser parser = new MathParser(loadPreDefinedFunctions: true);
+            MathParser parser = new MathParser();
             double result = parser.Parse("round(21.333333333333)");
             Assert.AreEqual(result, 21);
 
@@ -318,8 +306,6 @@ namespace MathosTest
             double time2 = BenchmarkUtil.Benchmark(() => parser.Parse(list), 25000);
 
             Assert.IsTrue(time >= time2);
-
-
         }
 
         [TestMethod]
@@ -384,8 +370,7 @@ namespace MathosTest
 
 
         }
-
-
+        
         [TestMethod]
         public void CommaPIBug()
         {
@@ -396,6 +381,16 @@ namespace MathosTest
             Assert.AreEqual(result, mp.LocalVariables["pi"]);
             
         }
+
+        [TestMethod]
+        public void NumberNotations()
+        {
+            var mp = new MathParser();
+
+            var scientificNotation = mp.Parse("5 * 10^-4");
+            Assert.AreEqual(scientificNotation, 0.0005);
+        }
+
         public class BenchmarkUtil
         {
             public static double Benchmark(Action action,
@@ -425,6 +420,5 @@ namespace MathosTest
                 return time;
             }
         }
-
     }
 }
