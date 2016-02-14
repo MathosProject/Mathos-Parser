@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/MathosProject/Mathos-Parser.svg?branch=master)](https://travis-ci.org/MathosProject/Mathos-Parser)
+
 Mathos Parser
 =============
 **Mathos Parser** is a mathematical expression parser, built on top of the .NET Framework, which allows you to parse all kinds of mathematical expressions, and in addition, add your own custom functions, operators, and variables (see the online demo).
