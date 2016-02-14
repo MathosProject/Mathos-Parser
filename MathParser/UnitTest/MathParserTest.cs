@@ -51,7 +51,7 @@ namespace MathosTest
         }
 
         [TestMethod]
-        public void ProgrmaticallyAddVariables()
+        public void ProgramicallyAddVariables()
         {
             /* 
              * when parsing an expression that requires 
@@ -62,7 +62,7 @@ namespace MathosTest
 
             // first way, using let varname = value
             double resultA = parser.ProgrammaticallyParse("let a = 2pi");
-            Assert.AreEqual(parser.Parse("a"), Math.PI * 2);
+            Assert.AreEqual(parser.Parse("a"), parser.LocalVariables["pi"] * 2, 0.00000000000001);
 
             // second way, using varname :=  value
             double resultC = parser.ProgrammaticallyParse("b := 20");
@@ -285,10 +285,9 @@ namespace MathosTest
 
             double a = parser.Parse("x+3");
 
-            Assert.AreEqual(a, 4.5M);
+            Assert.AreEqual(a, 4.5);
         }
-
-
+        
         [TestMethod]
         public void SpeedTests()
         {
@@ -381,11 +380,9 @@ namespace MathosTest
         public void CommaPIBug()
         {
             var mp = new MathParser();
-
             var result = mp.Parse("pi");
-
-            Assert.AreEqual(result, mp.LocalVariables["pi"]);
             
+            Assert.AreEqual(result, mp.LocalVariables["pi"], 0.00000000000001);
         }
 
         [TestMethod]
