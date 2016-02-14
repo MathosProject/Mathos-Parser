@@ -1,9 +1,9 @@
 language: csharp
-solution: MathParser/MathParser.sln
+#solution: MathParser/MathParser.sln
 
-before_install:
-  - sudo apt-get install nunit-console
-before_script:
-  - nuget restore MathParser/MathParser.sln
-after_script:
-  - nunit-console MathParser/UnitTest/Debug/UnitTest.dll
+install:
+  - sudo apt-get install mono-devel mono-gmcs nunit-console
+
+script:
+  - xbuild ./MathParser/MathParser.sln
+  - nunit-console ./MathParser/UnitTest/bin/UnitTest.dll
