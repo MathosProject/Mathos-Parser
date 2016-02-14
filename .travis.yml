@@ -5,4 +5,4 @@ install:
   - nuget install NUnit.Runners -Version 3.0.1 -OutputDirectory NUnitRunner
 script:
   - xbuild /p:Configuration=ReleaseNUnit ./MathParser/MathParser.sln
-  - mono ./NUnitRunner/NUnit.Console.3.0.1/tools/nunit3-console ./MathParser/UnitTest/bin/ReleaseNUnit/UnitTest.dll
+  - mono ./NUnitRunner/NUnit.Console.3.0.1/tools/nunit3-console.exe ./MathParser/UnitTest/bin/ReleaseNUnit/UnitTest.dll
