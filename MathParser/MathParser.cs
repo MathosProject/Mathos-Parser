@@ -336,10 +336,8 @@ namespace Mathos.Parser
                 }
                 else if (char.IsLetter(ch))
                 {
-                    if (i != 0 && (char.IsDigit(expr[i - 1]) || char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
-                    {
+                    if (i != 0 && (char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                         tokens.Add("*");
-                    }
 
                     vector += ch;
 
