@@ -8,7 +8,7 @@
     <ProjectGuid>{E17D08FF-ADF8-4F6E-B6D9-ED343E76E3A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MathParser</RootNamespace>
+    <RootNamespace>Mathos.Parser</RootNamespace>
     <AssemblyName>MathParser</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

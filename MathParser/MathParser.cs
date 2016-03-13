@@ -331,10 +331,9 @@ namespace Mathos.Parser
                 var ch = expr[i];
                 
                 if (char.IsWhiteSpace(ch))
-                {
-                    // should be used to remove whitespace.
-                }
-                else if (char.IsLetter(ch))
+                    continue;
+
+                if (char.IsLetter(ch))
                 {
                     if (i != 0 && (char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                         tokens.Add("*");
@@ -343,10 +342,7 @@ namespace Mathos.Parser
 
                     // here is it is possible to choose whether you want variables that only contain letters with or without digits.
                     while ((i + 1) < expr.Length && char.IsLetterOrDigit(expr[i + 1]))
-                    {
-                        i++;
-                        vector += expr[i];
-                    }
+                        vector += expr[++i];
 
                     tokens.Add(vector);
                     vector = "";
@@ -356,10 +352,7 @@ namespace Mathos.Parser
                     vector += ch;
 
                     while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
-                    {
-                        i++;
-                        vector += expr[i];
-                    }
+                        vector += expr[++i];
 
                     tokens.Add(vector);
                     vector = "";
@@ -375,10 +368,7 @@ namespace Mathos.Parser
                     vector += ch;
 
                     while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
-                    {
-                        i++;
-                        vector += expr[i];
-                    }
+                        vector += expr[++i];
 
                     tokens.Add(vector);
                     vector = "";
@@ -432,10 +422,10 @@ namespace Mathos.Parser
 
                 double tmpResult;
 
-                var functioName = tokens[open == 0 ? 0 : open - 1];
                 var args = new double[0];
+                var functionName = tokens[(open == 0) ? 0 : open - 1];
 
-                if (LocalFunctions.Keys.Contains(functioName))
+                if (LocalFunctions.Keys.Contains(functionName))
                 {
                     if (roughExpr.Contains(","))
                     {
@@ -448,10 +438,7 @@ namespace Mathos.Parser
                                 : roughExpr.Count;
 
                             while (i < firstCommaOrEndOfExpression)
-                            {
-                                defaultExpr.Add(roughExpr[i]);
-                                i++;
-                            }
+                                defaultExpr.Add(roughExpr[i++]);
 
                             // changing the size of the array of arguments
                             Array.Resize(ref args, args.Length + 1);
@@ -462,14 +449,14 @@ namespace Mathos.Parser
                         }
 
                         // finnaly, passing the arguments to the given function
-                        tmpResult = double.Parse(LocalFunctions[functioName](args).ToString(CultureInfo), CultureInfo);
+                        tmpResult = double.Parse(LocalFunctions[functionName](args).ToString(CultureInfo), CultureInfo);
                     }
                     else
                     {
                         // but if we only have one argument, then we pass it directly to the function
                         tmpResult =
                             double.Parse(
-                                LocalFunctions[functioName](new[] {BasicArithmeticalExpression(roughExpr)})
+                                LocalFunctions[functionName](new[] {BasicArithmeticalExpression(roughExpr)})
                                     .ToString(CultureInfo), CultureInfo);
                     }
                 }
@@ -486,7 +473,7 @@ namespace Mathos.Parser
                 tokens[open] = tmpResult.ToString(CultureInfo);
                 tokens.RemoveRange(open + 1, close - open);
 
-                if (LocalFunctions.Keys.Contains(functioName))
+                if (LocalFunctions.Keys.Contains(functionName))
                 {
                     // if we also executed a function, removing
                     // the function name as well.
