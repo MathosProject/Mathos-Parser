@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
 using System.Collections.ObjectModel;
+using System.IO;
+using Antlr4.Runtime;
 
 namespace Mathos.Parser
 {
@@ -187,6 +189,13 @@ namespace Mathos.Parser
         /// <returns></returns>
         public double Parse(string mathExpression)
         {
+            var input = new AntlrInputStream(new StringReader(mathExpression));
+            var lexer = new MathLanguageLexer(input);
+            var tokens = new CommonTokenStream(lexer);
+            var parser = new MathLanguageParser(tokens);
+
+            parser.model();
+
             return MathParserLogic(Scanner(mathExpression));
         }
 
@@ -512,7 +521,7 @@ namespace Mathos.Parser
                 case 0:
                     return 0;
             }
-
+            
             foreach (var op in OperatorList)
             {
                 while (tokens.IndexOf(op) != -1)
