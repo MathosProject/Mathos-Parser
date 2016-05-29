@@ -189,12 +189,17 @@ namespace Mathos.Parser
         /// <returns></returns>
         public double Parse(string mathExpression)
         {
-            var input = new AntlrInputStream(new StringReader(mathExpression));
-            var lexer = new MathLanguageLexer(input);
-            var tokens = new CommonTokenStream(lexer);
-            var parser = new MathLanguageParser(tokens);
+            using (var reader = new StringReader(mathExpression))
+            {
+                var input = new AntlrInputStream(reader);
+                var lexer = new MathLanguageLexer(input);
+                var tokens = new CommonTokenStream(lexer);
+                var parser = new MathLanguageParser(tokens);
+                var equation = parser.addSubtract().multiplyDivide();
 
-            parser.model();
+                foreach(var child in equation)
+                    Console.WriteLine(child.GetText() + " " + child.GetType());
+            }
 
             return MathParserLogic(Scanner(mathExpression));
         }

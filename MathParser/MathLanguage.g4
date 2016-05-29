@@ -1,26 +1,42 @@
 grammar MathLanguage;
 
-math
-	: addition
+addSubtract
+	: multiplyDivide ((Add | Subtract) multiplyDivide)*
 	;
 
-addition
-	: multiply ('+' multiply | '-' multiply)*
-	;
-
-multiply
-	:
+multiplyDivide
+	: atom ((Multiply | Divide) atom)*
 	;
 
 atom
-	: number
-	| '(' addition ')'
+	: Number
+	| Letter
 	;
 
-number
-	: ('0' .. '9')+ ('.' ('0' .. '9')+)?
+Add
+	: '+'
+	;
+
+Subtract
+	: '-'
+	;
+
+Multiply
+	: '*'
+	;
+
+Divide
+	: '/'
+	;
+
+Number
+	: [0-9]+ ('.' [0-9]+)?
+	;
+
+Letter
+	: [A-Za-z]
 	;
 
 WS  
-    : (' ' | '\t' | '\r'| '\n') {$channel=HIDDEN;}
+    : [ \r\n\t] + -> channel (HIDDEN)
     ;
