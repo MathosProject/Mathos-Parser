@@ -10,12 +10,10 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using Antlr4.Runtime;
 
 namespace Mathos.Parser
 {
@@ -122,7 +120,7 @@ namespace Mathos.Parser
                 });
 
                 LocalFunctions.Add("round", x => Math.Round(x[0]));
-                LocalFunctions.Add("truncate", x => (x[0] < 0) ? -Math.Floor(-x[0]) : Math.Floor(x[0]));
+                LocalFunctions.Add("truncate", x => x[0] < 0 ? -Math.Floor(-x[0]) : Math.Floor(x[0]));
                 LocalFunctions.Add("floor", x => Math.Floor(x[0]));
                 LocalFunctions.Add("ceiling", x => Math.Ceiling(x[0]));
                 LocalFunctions.Add("sign", x => Math.Sign(x[0]));
@@ -179,9 +177,7 @@ namespace Mathos.Parser
         public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
 
         #endregion
-
-        #region Public Methods
-
+        
         /// <summary>
         /// Enter the math expression in form of a string.
         /// </summary>
@@ -189,19 +185,7 @@ namespace Mathos.Parser
         /// <returns></returns>
         public double Parse(string mathExpression)
         {
-            using (var reader = new StringReader(mathExpression))
-            {
-                var input = new AntlrInputStream(reader);
-                var lexer = new MathLanguageLexer(input);
-                var tokens = new CommonTokenStream(lexer);
-                var parser = new MathLanguageParser(tokens);
-                var equation = parser.addSubtract().multiplyDivide();
-
-                foreach(var child in equation)
-                    Console.WriteLine(child.GetText() + " " + child.GetType());
-            }
-
-            return MathParserLogic(Scanner(mathExpression));
+            return MathParserLogic(Lexer(mathExpression));
         }
 
         /// <summary>
@@ -301,11 +285,9 @@ namespace Mathos.Parser
         /// <returns>A ReadOnlyCollection</returns>
         public ReadOnlyCollection<string> GetTokens(string mathExpression)
         {
-            return Scanner(mathExpression).AsReadOnly();
+            return Lexer(mathExpression).AsReadOnly();
         }
-
-        #endregion
-
+        
         #region Core
 
         /// <summary>
@@ -327,14 +309,14 @@ namespace Mathos.Parser
         }
         
         /// <summary>
-        /// Scanning the <paramref name="expr"/> and convert it into tokens.
+        /// Tokenizes <paramref name="expr"/>.
         /// </summary>
-        /// <param name="expr"></param>
-        /// <returns></returns>
-        private List<string> Scanner(string expr)
+        /// <param name="expr">The expression.</param>
+        /// <returns>Tokens found <paramref name="expr"/>.</returns>
+        private List<string> Lexer(string expr)
         {
+            var token = "";
             var tokens = new List<string>();
-            var vector = "";
 
             expr = expr.Replace("+-", "-");
             expr = expr.Replace("-+", "-");
@@ -352,46 +334,45 @@ namespace Mathos.Parser
                     if (i != 0 && (char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                         tokens.Add("*");
 
-                    vector += ch;
+                    token += ch;
+                    
+                    while (i + 1 < expr.Length && char.IsLetterOrDigit(expr[i + 1]))
+                        token += expr[++i];
 
-                    // here is it is possible to choose whether you want variables that only contain letters with or without digits.
-                    while ((i + 1) < expr.Length && char.IsLetterOrDigit(expr[i + 1]))
-                        vector += expr[++i];
-
-                    tokens.Add(vector);
-                    vector = "";
+                    tokens.Add(token);
+                    token = "";
                 }
                 else if (char.IsDigit(ch))
                 {
-                    vector += ch;
+                    token += ch;
 
-                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
-                        vector += expr[++i];
+                    while (i + 1 < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
+                        token += expr[++i];
 
-                    tokens.Add(vector);
-                    vector = "";
+                    tokens.Add(token);
+                    token = "";
                 }
-                else if ((i + 1) < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
+                else if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
                          (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo.InvariantCulture)) != -1 ||
-                          ((i - 1) > 0 && expr[i - 1] == '(')))
+                          (i - 1 > 0 && expr[i - 1] == '(')))
                 {
-                    // if the above is true, then, the token for that negative number will be "-1", not "-","1".
+                    // if the above is true, then the token for that negative number will be "-1", not "-","1".
                     // to sum up, the above will be true if the minus sign is in front of the number, but
                     // at the beginning, for example, -1+2, or, when it is inside the brakets (-1).
-                    // NOTE: this works for + sign as well!
-                    vector += ch;
+                    // NOTE: this works for + as well!
 
-                    while ((i + 1) < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
-                        vector += expr[++i];
+                    token += ch;
 
-                    tokens.Add(vector);
-                    vector = "";
+                    while (i + 1 < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
+                        token += expr[++i];
+
+                    tokens.Add(token);
+                    token = "";
                 }
                 else if (ch == '(')
                 {
                     if (i != 0 && (char.IsDigit(expr[i - 1]) || char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                     {
-                        // if we remove this line(below), we would be able to have numbers in function names. however, then we can't parse 3(2+2).
                         tokens.Add("*");
                         tokens.Add("(");
                     }
@@ -407,9 +388,6 @@ namespace Mathos.Parser
 
         private double MathParserLogic(List<string> tokens)
         {
-            // CALCULATING THE EXPRESSIONS INSIDE THE BRACKETS
-            // IF NEEDED, EXECUTE A FUNCTION
-
             // Variables replacement
             for (var i = 0; i < tokens.Count; i++)
             {
