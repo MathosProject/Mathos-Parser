@@ -3,7 +3,7 @@
  * All rights reserved.
  * 
  * Please see the license file in the project folder,
- * or, go to https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.
+ * or go to https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.
  * 
  * Please feel free to ask me directly at my email!
  *  artem@artemlos.net
