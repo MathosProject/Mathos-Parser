@@ -3,7 +3,7 @@ mono:
     - latest
 solution: ./MathParser/MathParser.sln
 before_install:
-  - mkdir -p nuget
+  - mkdir -p .nuget
   - wget -O .nuget/nuget.exe "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
   - mono .nuget/nuget.exe
 install:
