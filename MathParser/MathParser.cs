@@ -402,10 +402,7 @@ namespace Mathos.Parser
                 var close = tokens.IndexOf(")", open); // in case open is -1, i.e. no "(" // , open == 0 ? 0 : open - 1
 
                 if (open >= close)
-                {
-                    throw new ArithmeticException("No closing bracket/parenthesis! tkn: " +
-                                                  open.ToString(CultureInfo.InvariantCulture));
-                }
+                    throw new ArithmeticException("No closing bracket/parenthesis. Token: " + open.ToString(CultureInfo));
 
                 var roughExpr = new List<string>();
 
@@ -414,8 +411,8 @@ namespace Mathos.Parser
 
                 double tmpResult;
 
-                var args = new double[0];
-                var functionName = tokens[(open == 0) ? 0 : open - 1];
+                var args = new List<double>();
+                var functionName = tokens[open == 0 ? 0 : open - 1];
 
                 if (LocalFunctions.Keys.Contains(functionName))
                 {
@@ -431,17 +428,12 @@ namespace Mathos.Parser
 
                             while (i < firstCommaOrEndOfExpression)
                                 defaultExpr.Add(roughExpr[i++]);
-
-                            // changing the size of the array of arguments
-                            Array.Resize(ref args, args.Length + 1);
-
-                            args[args.Length - 1] = (defaultExpr.Count == 0)
-                                ? 0
-                                : BasicArithmeticalExpression(defaultExpr);
+                            
+                            args.Add(defaultExpr.Count == 0 ? 0 : BasicArithmeticalExpression(defaultExpr));
                         }
 
-                        // finnaly, passing the arguments to the given function
-                        tmpResult = double.Parse(LocalFunctions[functionName](args).ToString(CultureInfo), CultureInfo);
+                        // finally, passing the arguments to the given function
+                        tmpResult = double.Parse(LocalFunctions[functionName](args.ToArray()).ToString(CultureInfo), CultureInfo);
                     }
                     else
                     {
@@ -496,8 +488,7 @@ namespace Mathos.Parser
                     if (op == "-" || op == "+")
                     {
                         return
-                            double.Parse((op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-")) + tokens[1],
-                                CultureInfo);
+                            double.Parse((op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-")) + tokens[1], CultureInfo);
                     }
 
                     return OperatorAction[op](0, double.Parse(tokens[1], CultureInfo));
