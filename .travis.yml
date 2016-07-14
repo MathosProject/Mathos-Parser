@@ -1,4 +1,6 @@
 language: csharp
+mono:
+    - latest
 solution: ./MathParser/MathParser.sln
 install:
   - nuget restore ./MathParser/MathParser.sln
