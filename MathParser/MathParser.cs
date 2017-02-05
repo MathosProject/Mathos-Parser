@@ -309,8 +309,8 @@ namespace Mathos.Parser
         /// <summary>
         /// Tokenizes <paramref name="expr"/>.
         /// </summary>
-        /// <param name="expr">The expression.</param>
-        /// <returns>Tokens found <paramref name="expr"/>.</returns>
+        /// <param name="expr">The expression to tokenize.</param>
+        /// <returns>The tokens.</returns>
         private List<string> Lexer(string expr)
         {
             var token = "";
@@ -339,8 +339,11 @@ namespace Mathos.Parser
 
                     tokens.Add(token);
                     token = "";
+
+                    continue;
                 }
-                else if (char.IsDigit(ch))
+
+                if (char.IsDigit(ch))
                 {
                     token += ch;
 
@@ -349,8 +352,11 @@ namespace Mathos.Parser
 
                     tokens.Add(token);
                     token = "";
+
+                    continue;
                 }
-                else if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
+
+                if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
                          (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo.InvariantCulture)) != -1 ||
                           (i - 1 > 0 && expr[i - 1] == '(')))
                 {
@@ -366,8 +372,11 @@ namespace Mathos.Parser
 
                     tokens.Add(token);
                     token = "";
+
+                    continue;
                 }
-                else if (ch == '(')
+
+                if (ch == '(')
                 {
                     if (i != 0 && (char.IsDigit(expr[i - 1]) || char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
                     {
