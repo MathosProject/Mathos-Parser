@@ -18,15 +18,13 @@ using System.Collections.ObjectModel;
 namespace Mathos.Parser
 {
     /// <summary>
-    /// This is a mathematical expression parser that allows you to parser a string value,
-    /// perform the required calculations, and return a value in form of a decimal.
+    /// This is a mathematical expression parser that allows you to perform calculations on string values.
     /// </summary>
     public class MathParser
     {
         /// <summary>
-        /// This constructor will add some basic operators, functions, and variables
-        /// to the parser. Please note that you are able to change that using
-        /// boolean flags
+        /// Initializes a new instance of the MathParser class, and optionally with
+        /// predefined functions, operators, and variables.
         /// </summary>
         /// <param name="loadPreDefinedFunctions">This will load "abs", "cos", "cosh", "arccos", "sin", "sinh", "arcsin", "tan", "tanh", "arctan", "sqrt", "rem", "round"</param>
         /// <param name="loadPreDefinedOperators">This will load "%", "*", ":", "/", "+", "-", ">", "&lt;", "="</param>
@@ -129,7 +127,7 @@ namespace Mathos.Parser
             if (loadPreDefinedVariables)
             {
                 // local variables such as pi can also be added into the parser.
-                LocalVariables.Add("pi", 3.14159265358979323846264338327950288); // the simplest variable!
+                LocalVariables.Add("pi", 3.14159265358979323846264338327950288);
                 LocalVariables.Add("pi2", 6.28318530717958647692528676655900576);
                 LocalVariables.Add("pi05", 1.57079632679489661923132169163975144);
                 LocalVariables.Add("pi025", 0.78539816339744830961566084581987572);
