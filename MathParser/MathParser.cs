@@ -1,5 +1,5 @@
 ﻿/* 
- * Copyright (C) 2012-2016 Mathos Project,
+ * Copyright (C) 2012-2017 Mathos Project,
  * All rights reserved.
  * 
  * Please see the license file in the project folder,
