@@ -170,7 +170,7 @@ namespace Mathos.Parser
 
         /// <summary>
         /// When converting the result from the Parse method or ProgrammaticallyParse method ToString(),
-        /// please use this cultur info.
+        /// please use this culture info.
         /// </summary>
         public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
 
@@ -357,7 +357,7 @@ namespace Mathos.Parser
                 }
 
                 if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
-                         (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo.InvariantCulture)) != -1 ||
+                         (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo)) != -1 ||
                           (i - 1 > 0 && expr[i - 1] == '(')))
                 {
                     // if the above is true, then the token for that negative number will be "-1", not "-","1".
