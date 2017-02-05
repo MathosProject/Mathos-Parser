@@ -175,7 +175,7 @@ namespace Mathos.Parser
         public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
 
         #endregion
-        
+
         /// <summary>
         /// Enter the math expression in form of a string.
         /// </summary>
@@ -285,7 +285,7 @@ namespace Mathos.Parser
         {
             return Lexer(mathExpression).AsReadOnly();
         }
-        
+
         #region Core
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace Mathos.Parser
 
             return input;
         }
-        
+
         /// <summary>
         /// Tokenizes <paramref name="expr"/>.
         /// </summary>
@@ -323,7 +323,7 @@ namespace Mathos.Parser
             for (var i = 0; i < expr.Length; i++)
             {
                 var ch = expr[i];
-                
+
                 if (char.IsWhiteSpace(ch))
                     continue;
 
@@ -333,7 +333,7 @@ namespace Mathos.Parser
                         tokens.Add("*");
 
                     token += ch;
-                    
+
                     while (i + 1 < expr.Length && char.IsLetterOrDigit(expr[i + 1]))
                         token += expr[++i];
 
@@ -357,8 +357,8 @@ namespace Mathos.Parser
                 }
 
                 if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
-                         (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo)) != -1 ||
-                          (i - 1 > 0 && expr[i - 1] == '(')))
+                    (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo)) != -1 ||
+                     (i - 1 > 0 && expr[i - 1] == '(')))
                 {
                     // if the above is true, then the token for that negative number will be "-1", not "-","1".
                     // to sum up, the above will be true if the minus sign is in front of the number, but
@@ -429,13 +429,14 @@ namespace Mathos.Parser
                         for (var i = 0; i < roughExpr.Count; i++)
                         {
                             var defaultExpr = new List<string>();
-                            var firstCommaOrEndOfExpression = (roughExpr.IndexOf(",", i) != -1)
-                                ? roughExpr.IndexOf(",", i)
-                                : roughExpr.Count;
+                            var firstCommaOrEndOfExpression =
+                                roughExpr.IndexOf(",", i) != -1
+                                    ? roughExpr.IndexOf(",", i)
+                                    : roughExpr.Count;
 
                             while (i < firstCommaOrEndOfExpression)
                                 defaultExpr.Add(roughExpr[i++]);
-                            
+
                             args.Add(defaultExpr.Count == 0 ? 0 : BasicArithmeticalExpression(defaultExpr));
                         }
 
@@ -445,10 +446,10 @@ namespace Mathos.Parser
                     else
                     {
                         // but if we only have one argument, then we pass it directly to the function
-                        tmpResult =
-                            double.Parse(
-                                LocalFunctions[functionName](new[] {BasicArithmeticalExpression(roughExpr)})
-                                    .ToString(CultureInfo), CultureInfo);
+                        tmpResult = double.Parse(LocalFunctions[functionName](new[]
+                        {
+                            BasicArithmeticalExpression(roughExpr)
+                        }).ToString(CultureInfo), CultureInfo);
                     }
                 }
                 else
@@ -494,15 +495,14 @@ namespace Mathos.Parser
 
                     if (op == "-" || op == "+")
                     {
-                        return
-                            double.Parse((op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-")) + tokens[1], CultureInfo);
+                        return double.Parse((op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-")) + tokens[1], CultureInfo);
                     }
 
                     return OperatorAction[op](0, double.Parse(tokens[1], CultureInfo));
                 case 0:
                     return 0;
             }
-            
+
             foreach (var op in OperatorList)
             {
                 while (tokens.IndexOf(op) != -1)
