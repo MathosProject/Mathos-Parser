@@ -22,6 +22,40 @@ namespace Mathos.Parser
     /// </summary>
     public class MathParser
     {
+        #region Properties
+
+        /// <summary>
+        /// All operators should be inside this property.
+        /// The first operator is executed first, et cetera.
+        /// An operator may only be ONE character.
+        /// </summary>
+        public List<string> OperatorList { get; set; } = new List<string>();
+
+        /// <summary>
+        /// When adding a variable in the OperatorList property, you need to assign how that operator should work.
+        /// </summary>
+        public Dictionary<string, Func<double, double, double>> OperatorAction { get; set; } =
+            new Dictionary<string, Func<double, double, double>>();
+
+        /// <summary>
+        /// All functions that you want to define should be inside this property.
+        /// </summary>
+        public Dictionary<string, Func<double[], double>> LocalFunctions { get; set; } =
+            new Dictionary<string, Func<double[], double>>();
+
+        /// <summary>
+        /// All variables that you want to define should be inside this property.
+        /// </summary>
+        public Dictionary<string, double> LocalVariables { get; set; } = new Dictionary<string, double>();
+
+        /// <summary>
+        /// When converting the result from the Parse method or ProgrammaticallyParse method ToString(),
+        /// please use this culture info.
+        /// </summary>
+        public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the MathParser class, and optionally with
         /// predefined functions, operators, and variables.
@@ -141,40 +175,6 @@ namespace Mathos.Parser
                 LocalVariables.Add("minor", 0.38196601125010515179541316563436189);
             }
         }
-
-        #region Properties
-
-        /// <summary>
-        /// All operators should be inside this property.
-        /// The first operator is executed first, et cetera.
-        /// An operator may only be ONE character.
-        /// </summary>
-        public List<string> OperatorList { get; set; } = new List<string>();
-
-        /// <summary>
-        /// When adding a variable in the OperatorList property, you need to assign how that operator should work.
-        /// </summary>
-        public Dictionary<string, Func<double, double, double>> OperatorAction { get; set; } =
-            new Dictionary<string, Func<double, double, double>>();
-
-        /// <summary>
-        /// All functions that you want to define should be inside this property.
-        /// </summary>
-        public Dictionary<string, Func<double[], double>> LocalFunctions { get; set; } =
-            new Dictionary<string, Func<double[], double>>();
-
-        /// <summary>
-        /// All variables that you want to define should be inside this property.
-        /// </summary>
-        public Dictionary<string, double> LocalVariables { get; set; } = new Dictionary<string, double>();
-
-        /// <summary>
-        /// When converting the result from the Parse method or ProgrammaticallyParse method ToString(),
-        /// please use this culture info.
-        /// </summary>
-        public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
-
-        #endregion
 
         /// <summary>
         /// Enter the math expression in form of a string.
