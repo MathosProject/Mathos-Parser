@@ -7,7 +7,7 @@ Mathos Parser
 * The PCL compliant version: https://github.com/MathosProject/Mathos-Parser-Portable
 * The CIL version (compiles expressions into IL code): https://github.com/MathosProject/Mathos-Parser-CIL
 
-##Features
+## Features
 
 * Parse all kinds of mathematical expressions.
 * Add conditional statements.
@@ -20,11 +20,11 @@ Mathos Parser
 * Decimal operations.
 * And much more!
 
-##Introduction
+## Introduction
 
 Mathos Parser is a part of Mathos Project, a project that provides useful methods, structures, etc, to make the life a little bit easier! This math parser is fully independent of Mathos project, so you can just use this library to archive a powerful math parsing experience.
 
-##How to use
+## How to use
 
 It's really easy to use and understand this math parser. In this topic I will try to show you some (not all) key features of this library.
 
@@ -33,7 +33,7 @@ It's really easy to use and understand this math parser. In this topic I will tr
 * Functions with more than one argument.
 * Programatically add variables.
 
-###Adding custom operator
+### Adding custom operator
 
 ````csharp
 // declaring the parser
@@ -51,7 +51,7 @@ parser.OperatorAction.Add("^", delegate(decimal numA, decimal numB)
 // parsing and comparing
 Assert.IsTrue(parser.Parse("3^2") == (decimal)Math.Pow (3,2));
 ````
-###Adding custom function
+### Adding custom function
 ````csharp
 public void CustomFunctions()
 {
@@ -88,7 +88,7 @@ public decimal NumberTimesTwoCustomFunction(decimal[] input)
     return input[0] * 2;
 }
 ````
-###Functions with more than one operator
+### Functions with more than one operator
 ````csharp
 /*
  * This example demonstrates the "anonymous method" way of adding
@@ -120,7 +120,7 @@ parser.LocalFunctions.Add("log", delegate(decimal[] input) // adding the functio
 decimal resultA = parser.Parse("log(2)");
 decimal resultB = parser.Parse("log(2,3)");
 ````
-###Programatically add variables
+### Programatically add variables
 ```csharp
 /* 
 * when parsing an expression that requires 
