@@ -357,7 +357,11 @@ namespace Mathos.Parser
                 }
 
                 if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
-                    (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(CultureInfo)) != -1 ||
+                    (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(
+#if !NETSTANDARD1_4 
+                        CultureInfo 
+#endif
+                        )) != -1 ||
                      (i - 1 > 0 && expr[i - 1] == '(')))
                 {
                     // if the above is true, then the token for that negative number will be "-1", not "-","1".
