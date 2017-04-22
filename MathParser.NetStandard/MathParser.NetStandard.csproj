@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <PackageId>MathParser</PackageId>
+    <Authors>MathParser</Authors>
+    <Company>MathParser</Company>
+    <Product>MathParser</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\MathParser\MathParser.cs" />
+    <None Include="..\MathParser\**\*.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
