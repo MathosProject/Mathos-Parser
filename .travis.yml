@@ -12,6 +12,9 @@ install:
   - mono .nuget/nuget.exe restore ./MathParser/MathParser.sln
   - mono .nuget/nuget.exe install NUnit.Runners -Version 3.4.1 -OutputDirectory NUnitRunner
 script:
+  # .NET Framework
+  - msbuild /p:Configuration=FrameworkBuild /p:TargetFrameworkVersion="v4.0" ./MathParser/MathParser.sln
+  - mono ./NUnitRunner/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe ./MathParser/UnitTest/bin/FrameworkBuild/MathosParserTest.dll
+  # .NET Core
   - dotnet restore
-  - msbuild /p:Configuration=ReleaseNUnit /p:TargetFrameworkVersion="v4.0" ./MathParser/MathParser.sln
-  - mono ./NUnitRunner/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe ./MathParser/UnitTest/bin/ReleaseNUnit/MathosParserTest.dll
+  - dotnet build --configuration CoreBuild
