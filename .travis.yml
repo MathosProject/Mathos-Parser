@@ -1,6 +1,8 @@
 language: csharp
 mono:
     - latest
+dotnet: 1.0.4
+dist: trusty
 solution: ./MathParser/MathParser.sln
 before_install:
   - mkdir -p .nuget
@@ -10,5 +12,6 @@ install:
   - mono .nuget/nuget.exe restore ./MathParser/MathParser.sln
   - mono .nuget/nuget.exe install NUnit.Runners -Version 3.4.1 -OutputDirectory NUnitRunner
 script:
-  - xbuild /p:Configuration=ReleaseNUnit /p:TargetFrameworkVersion="v4.0" ./MathParser/MathParser.sln
+  - dotnet restore
+  - msbuild /p:Configuration=ReleaseNUnit /p:TargetFrameworkVersion="v4.0" ./MathParser/MathParser.sln
   - mono ./NUnitRunner/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe ./MathParser/UnitTest/bin/ReleaseNUnit/MathosParserTest.dll
