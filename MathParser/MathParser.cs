@@ -179,8 +179,8 @@ namespace Mathos.Parser
         /// <summary>
         /// Enter the math expression in form of a string.
         /// </summary>
-        /// <param name="mathExpression"></param>
-        /// <returns></returns>
+        /// <param name="mathExpression">The math expression to parse.</param>
+        /// <returns>The result of executing <paramref name="mathExpression"/>.</returns>
         public double Parse(string mathExpression)
         {
             return MathParserLogic(Lexer(mathExpression));
@@ -189,8 +189,8 @@ namespace Mathos.Parser
         /// <summary>
         /// Enter the math expression in form of a list of tokens.
         /// </summary>
-        /// <param name="mathExpression"></param>
-        /// <returns></returns>
+        /// <param name="mathExpression">The math expression to parse.</param>
+        /// <returns>The result of executing <paramref name="mathExpression"/>.</returns>
         public double Parse(ReadOnlyCollection<string> mathExpression)
         {
             return MathParserLogic(new List<string>(mathExpression));
@@ -204,10 +204,10 @@ namespace Mathos.Parser
         /// 
         /// Last way of adding/editing a variable is to type "let varName be 20"
         /// </summary>
-        /// <param name="mathExpression"></param>
-        /// <param name="correctExpression"></param>
-        /// <param name="identifyComments"></param>
-        /// <returns></returns>
+        /// <param name="mathExpression">The math expression to parse.</param>
+        /// <param name="correctExpression">If true, correct <paramref name="correctExpression"/> of any typos.</param>
+        /// <param name="identifyComments">If true, treat "#", "#{", and "}#" as comments.</param>
+        /// <returns>The result of executing <paramref name="mathExpression"/>.</returns>
         public double ProgrammaticallyParse(string mathExpression, bool correctExpression = true, bool identifyComments = true)
         {
             if (identifyComments)
@@ -279,8 +279,8 @@ namespace Mathos.Parser
         /// <summary>
         /// This will convert a string expression into a list of tokens that can be later executed by Parse or ProgrammaticallyParse methods.
         /// </summary>
-        /// <param name="mathExpression"></param>
-        /// <returns>A ReadOnlyCollection</returns>
+        /// <param name="mathExpression">The math expression to tokenize.</param>
+        /// <returns>The resulting tokens of <paramref name="mathExpression"/>.</returns>
         public ReadOnlyCollection<string> GetTokens(string mathExpression)
         {
             return Lexer(mathExpression).AsReadOnly();
@@ -362,7 +362,7 @@ namespace Mathos.Parser
                         CultureInfo 
 #endif
                         )) != -1 ||
-                     (i - 1 > 0 && expr[i - 1] == '(')))
+                     i - 1 > 0 && expr[i - 1] == '('))
                 {
                     // if the above is true, then the token for that negative number will be "-1", not "-","1".
                     // to sum up, the above will be true if the minus sign is in front of the number, but
