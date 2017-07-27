@@ -8,8 +8,6 @@
     <Product>MathParser</Product>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugFramework|AnyCPU'" />
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='FrameworkBuild|AnyCPU'" />
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CoreBuild|AnyCPU'" />

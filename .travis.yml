@@ -14,7 +14,7 @@ install:
 script:
   # .NET Framework
   - msbuild /p:Configuration=FrameworkBuild /p:TargetFrameworkVersion="v4.0" ./MathParser/MathParser.sln
-  - mono ./NUnitRunner/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe ./MathParser/UnitTest/bin/FrameworkBuild/MathosParserTest.dll
+  - mono ./NUnitRunner/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe ./MathParser/UnitTest/bin/NUnitBuild/MathosParserTest.dll
   # .NET Core
   - dotnet restore
   - dotnet build --configuration CoreBuild
