@@ -12,6 +12,14 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CoreBuild|AnyCPU'" />
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>6</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Include="..\MathParser\MathParser.cs" />
     <None Include="..\MathParser\**\*.txt" CopyToOutputDirectory="PreserveNewest" />
