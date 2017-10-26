@@ -104,7 +104,7 @@ namespace Mathos.Parser
 
             if (loadPreDefinedFunctions)
             {
-                LocalFunctions = new Dictionary<string, Func<double[], double>>(25)
+                LocalFunctions = new Dictionary<string, Func<double[], double>>(26)
                 {
                     ["abs"] = inputs => Math.Abs(inputs[0]),
 
@@ -148,7 +148,9 @@ namespace Mathos.Parser
                             default:
                                 return 0;
                         }
-                    }
+                    },
+
+                    ["ln"] = inputs => Math.Log(inputs[0])
                 };
             }
             else
