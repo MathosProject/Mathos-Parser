@@ -29,24 +29,22 @@ namespace Mathos.Parser
         /// The first operator is executed first, et cetera.
         /// An operator may only be ONE character.
         /// </summary>
-        public List<string> OperatorList { get; set; } = new List<string>();
+        public List<string> OperatorList { get; set; }
 
         /// <summary>
         /// When adding a variable in the OperatorList property, you need to assign how that operator should work.
         /// </summary>
-        public Dictionary<string, Func<double, double, double>> OperatorAction { get; set; } =
-            new Dictionary<string, Func<double, double, double>>();
+        public Dictionary<string, Func<double, double, double>> OperatorAction { get; set; }
 
         /// <summary>
         /// All functions that you want to define should be inside this property.
         /// </summary>
-        public Dictionary<string, Func<double[], double>> LocalFunctions { get; set; } =
-            new Dictionary<string, Func<double[], double>>();
+        public Dictionary<string, Func<double[], double>> LocalFunctions { get; set; }
 
         /// <summary>
         /// All variables that you want to define should be inside this property.
         /// </summary>
-        public Dictionary<string, double> LocalVariables { get; set; } = new Dictionary<string, double>();
+        public Dictionary<string, double> LocalVariables { get; set; }
 
         /// <summary>
         /// When converting the result from the Parse method or ProgrammaticallyParse method ToString(),
@@ -67,113 +65,112 @@ namespace Mathos.Parser
         {
             if (loadPreDefinedOperators)
             {
-                // by default, we will load basic arithmetic operators.
-                // please note, its possible to do it either inside the constructor,
-                // or outside the class. the lowest value will be executed first!
-                OperatorList.Add("^"); // to the power of
-                OperatorList.Add("%"); // modulo
-                OperatorList.Add(":"); // division 1
-                OperatorList.Add("/"); // division 2
-                OperatorList.Add("*"); // multiplication
-                OperatorList.Add("-"); // subtraction
-                OperatorList.Add("+"); // addition
+                OperatorList = new List<string>(10)
+                {
+                    "^",
+                    "%",
+                    ":",
+                    "/",
+                    "*",
+                    "-",
+                    "+",
 
-                OperatorList.Add(">"); // greater than
-                OperatorList.Add("<"); // less than
-                OperatorList.Add("="); // are equal
+                    ">",
+                    "<",
+                    "="
+                };
 
-
-                // when an operator is executed, the parser needs to know how.
-                // this is how you can add your own operators. note, the order
-                // in this list does not matter.
-                OperatorAction.Add("^", Math.Pow);
-                OperatorAction.Add("%", (numberA, numberB) => numberA%numberB);
-                OperatorAction.Add(":", (numberA, numberB) => numberA/numberB);
-                OperatorAction.Add("/", (numberA, numberB) => numberA/numberB);
-                OperatorAction.Add("*", (numberA, numberB) => numberA*numberB);
-                OperatorAction.Add("+", (numberA, numberB) => numberA + numberB);
-                OperatorAction.Add("-", (numberA, numberB) => numberA - numberB);
-
-                OperatorAction.Add(">", (numberA, numberB) => numberA > numberB ? 1 : 0);
-                OperatorAction.Add("<", (numberA, numberB) => numberA < numberB ? 1 : 0);
-                OperatorAction.Add("=", (numberA, numberB) => Math.Abs(numberA - numberB) < double.Epsilon ? 1 : 0);
+                OperatorAction = new Dictionary<string, Func<double, double, double>>(10)
+                {
+                    ["^"] = Math.Pow,
+                    ["%"] = (a, b) => a % b,
+                    [":"] = (a, b) => a / b,
+                    ["/"] = (a, b) => a / b,
+                    ["*"] = (a, b) => a * b,
+                    ["-"] = (a, b) => a - b,
+                    ["+"] = (a, b) => a + b,
+                    
+                    [">"] = (a, b) => a > b ? 1 : 0,
+                    ["<"] = (a, b) => a < b ? 1 : 0,
+                    ["="] = (a, b) => Math.Abs(a - b) < 0.00000001 ? 1 : 0
+                };
             }
-
+            else
+            {
+                OperatorList = new List<string>();
+                OperatorAction = new Dictionary<string, Func<double, double, double>>();
+            }
 
             if (loadPreDefinedFunctions)
             {
-                // these are the basic functions you might be able to use.
-                // as with operators, localFunctions might be adjusted, i.e.
-                // you can add or remove a function.
-                // please open the "MathosTest" project, and find MathParser.cs
-                // in "CustomFunction" you will see three ways of adding 
-                // a new function to this variable!
-                // EACH FUNCTION MAY ONLY TAKE ONE PARAMETER, AND RETURN ONE
-                // VALUE. THESE VALUES SHOULD BE IN "DOUBLE FORMAT"!
-                LocalFunctions.Add("abs", x => Math.Abs(x[0]));
-
-                LocalFunctions.Add("cos", x => Math.Cos(x[0]));
-                LocalFunctions.Add("cosh", x => Math.Cosh(x[0]));
-                LocalFunctions.Add("arccos", x => Math.Acos(x[0]));
-
-                LocalFunctions.Add("sin", x => Math.Sin(x[0]));
-                LocalFunctions.Add("sinh", x => Math.Sinh(x[0]));
-                LocalFunctions.Add("arcsin", x => Math.Asin(x[0]));
-
-                LocalFunctions.Add("tan", x => Math.Tan(x[0]));
-                LocalFunctions.Add("tanh", x => Math.Tanh(x[0]));
-                LocalFunctions.Add("arctan", x => Math.Atan(x[0]));
-                //LocalFunctions.Add("arctan2", x => (decimal)Math.Atan2((double)x[0], (double)x[1]));
-
-                LocalFunctions.Add("sqrt", x => Math.Sqrt(x[0]));
-                LocalFunctions.Add("rem", x => Math.IEEERemainder(x[0], x[1]));
-                LocalFunctions.Add("root", x => Math.Pow(x[0], 1.0/x[1]));
-
-                LocalFunctions.Add("pow", x => Math.Pow(x[0], x[1]));
-
-                LocalFunctions.Add("exp", x => Math.Exp(x[0]));
-                //LocalFunctions.Add("log", x => (decimal)Math.Log((double)x[0]));
-                //LocalFunctions.Add("log10", x => (decimal)Math.Log10((double)x[0]));
-
-                LocalFunctions.Add("log", delegate(double[] input)
+                LocalFunctions = new Dictionary<string, Func<double[], double>>(25)
                 {
-                    // input[0] is the number
-                    // input[1] is the base
+                    ["abs"] = inputs => Math.Abs(inputs[0]),
 
-                    switch (input.Length)
+                    ["cos"] = inputs => Math.Cos(inputs[0]),
+                    ["cosh"] = inputs => Math.Cosh(inputs[0]),
+                    ["acos"] = inputs => Math.Acos(inputs[0]),
+                    ["arccos"] = inputs => Math.Acos(inputs[0]),
+
+                    ["sin"] = inputs => Math.Sin(inputs[0]),
+                    ["sinh"] = inputs => Math.Sinh(inputs[0]),
+                    ["asin"] = inputs => Math.Asin(inputs[0]),
+                    ["arcsin"] = inputs => Math.Asin(inputs[0]),
+
+                    ["tan"] = inputs => Math.Tan(inputs[0]),
+                    ["tanh"] = inputs => Math.Tanh(inputs[0]),
+                    ["atan"] = inputs => Math.Atan(inputs[0]),
+                    ["arctan"] = inputs => Math.Atan(inputs[0]),
+
+                    ["sqrt"] = inputs => Math.Sqrt(inputs[0]),
+                    ["pow"] = inputs => Math.Pow(inputs[0], inputs[1]),
+                    ["root"] = inputs => Math.Pow(inputs[0], 1 / inputs[1]),
+                    ["rem"] = inputs => Math.IEEERemainder(inputs[0], inputs[1]),
+
+                    ["sign"] = inputs => Math.Sign(inputs[0]),
+                    ["exp"] = inputs => Math.Exp(inputs[0]),
+
+                    ["floor"] = inputs => Math.Floor(inputs[0]),
+                    ["ceil"] = inputs => Math.Ceiling(inputs[0]),
+                    ["ceiling"] = inputs => Math.Ceiling(inputs[0]),
+                    ["round"] = inputs => Math.Round(inputs[0]),
+                    ["truncate"] = inputs => inputs[0] < 0 ? -Math.Floor(-inputs[0]) : Math.Floor(inputs[0]),
+
+                    ["log"] = inputs =>
                     {
-                        case 1:
-                            return Math.Log(input[0]);
-                        case 2:
-                            return Math.Log(input[0], input[1]);
-                        default:
-                            return 0; // false
+                        switch (inputs.Length)
+                        {
+                            case 1:
+                                return Math.Log10(inputs[0]);
+                            case 2:
+                                return Math.Log(inputs[0], inputs[1]);
+                            default:
+                                return 0;
+                        }
                     }
-                });
-
-                LocalFunctions.Add("round", x => Math.Round(x[0]));
-                LocalFunctions.Add("truncate", x => x[0] < 0 ? -Math.Floor(-x[0]) : Math.Floor(x[0]));
-                LocalFunctions.Add("floor", x => Math.Floor(x[0]));
-                LocalFunctions.Add("ceiling", x => Math.Ceiling(x[0]));
-                LocalFunctions.Add("sign", x => Math.Sign(x[0]));
+                };
             }
+            else
+                LocalFunctions = new Dictionary<string, Func<double[], double>>();
 
             if (loadPreDefinedVariables)
             {
-                // local variables such as pi can also be added into the parser.
-                LocalVariables.Add("pi", 3.14159265358979323846264338327950288);
-                LocalVariables.Add("pi2", 6.28318530717958647692528676655900576);
-                LocalVariables.Add("pi05", 1.57079632679489661923132169163975144);
-                LocalVariables.Add("pi025", 0.78539816339744830961566084581987572);
-                LocalVariables.Add("pi0125", 0.39269908169872415480783042290993786);
-                LocalVariables.Add("pitograd", 57.2957795130823208767981548141051704);
-                LocalVariables.Add("piofgrad", 0.01745329251994329576923690768488612);
+                LocalVariables = new Dictionary<string, double>(8)
+                {
+                    ["pi"] = 3.14159265358979,
+                    ["tao"] = 6.28318530717959,
 
-                LocalVariables.Add("e", 2.71828182845904523536028747135266249);
-                LocalVariables.Add("phi", 1.61803398874989484820458683436563811);
-                LocalVariables.Add("major", 0.61803398874989484820458683436563811);
-                LocalVariables.Add("minor", 0.38196601125010515179541316563436189);
+                    ["e"] = 2.71828182845905,
+                    ["phi"] = 1.61803398874989,
+                    ["major"] = 0.61803398874989,
+                    ["minor"] = 0.38196601125011,
+
+                    ["pitograd"] = 57.2957795130823,
+                    ["piofgrad"] = 0.01745329251994
+                };
             }
+            else
+                LocalVariables = new Dictionary<string, double>();
         }
 
         /// <summary>
@@ -529,3 +526,6 @@ namespace Mathos.Parser
         #endregion
     }
 }
+
+
+
