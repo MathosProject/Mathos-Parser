@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathParser", "MathParser.csproj", "{E17D08FF-ADF8-4F6E-B6D9-ED343E76E3A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathParser", "MathParser\MathParser.csproj", "{E17D08FF-ADF8-4F6E-B6D9-ED343E76E3A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathParserTest", "UnitTest\MathParserTest.csproj", "{4BC67DFD-E614-4E23-91D6-25F38D575BA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathParserTest", "MathParser\UnitTest\MathParserTest.csproj", "{4BC67DFD-E614-4E23-91D6-25F38D575BA5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathParser.NetStandard", "..\MathParser.NetStandard\MathParser.NetStandard.csproj", "{C9135199-15EB-48E1-BCF1-389CA7253466}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathParser.NetStandard", "MathParser.NetStandard\MathParser.NetStandard.csproj", "{C9135199-15EB-48E1-BCF1-389CA7253466}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
