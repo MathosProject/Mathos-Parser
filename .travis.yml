@@ -1,4 +1,6 @@
 language: csharp
+notifications:
+  email: false
 mono:
     - latest
 dotnet: 1.0.4
