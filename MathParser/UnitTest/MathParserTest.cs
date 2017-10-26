@@ -17,42 +17,41 @@ namespace Mathos.Parser.Test
     public class MathParserTest
     {
         [TestMethod]
-        public void BasicArithmetics()
+        public void BasicArithmetic()
         {
             var parser = new MathParser();
             
-            Assert.AreEqual(7, parser.Parse("5+2"));
-            Assert.AreEqual(11, parser.Parse("5+2*3"));
+            Assert.AreEqual(7, parser.Parse("5 + 2"));
+            Assert.AreEqual(11, parser.Parse("5 + 2 * 3"));
+            Assert.AreEqual(17, parser.Parse("27 - 3 * 3 + 1 - 4 / 2"));
         }
         
         [TestMethod]
-        public void AdvancedArithmetics()
+        public void AdvancedArithmetic()
         {
             var parser = new MathParser();
             
+            Assert.AreEqual(30, parser.Parse("3(7+3)"));
             Assert.AreEqual(20, parser.Parse("(2+3)(3+1)"));
         }
 
         [TestMethod]
-        public void ConditionStatements()
+        public void ConditionalStatements()
         {
             var parser = new MathParser();
 
             Assert.AreEqual(1, parser.Parse("2 + 3 = 1 + 4"));
-            Assert.AreEqual(1, parser.Parse("3 + 2 > (2 - 1)"));
+            Assert.AreEqual(1, parser.Parse("3 + 2 > 2 - 1"));
+            Assert.AreEqual(1, parser.Parse("(2+3)(3+1) < 50 - 20"));
 
             Assert.AreEqual(0, parser.Parse("2 + 2 = 22"));
-            Assert.AreEqual(0, parser.Parse("10 > 100"));
+            Assert.AreEqual(0, parser.Parse("(2+3)(3+1) > 50 - 20"));
+            Assert.AreEqual(0, parser.Parse("100 < 10"));
         }
 
         [TestMethod]
         public void ProgramicallyAddVariables()
         {
-            /* 
-             * when parsing an expression that requires,
-             * for instance, a variable name declaration
-             * or change, use ProgramaticallyParse().
-             */
             var parser = new MathParser();
             
             parser.ProgrammaticallyParse("let a = 2pi");
@@ -61,67 +60,46 @@ namespace Mathos.Parser.Test
             parser.ProgrammaticallyParse("b := 20");
             Assert.AreEqual(20, parser.Parse("b"));
             
-            parser.ProgrammaticallyParse("let c be 25");
-            Assert.AreEqual(25, parser.Parse("c"));
-        }
-
-        private double NumberTimesTwo(double[] x)
-        {
-            return x[0] * 2;
+            parser.ProgrammaticallyParse("let c be 25 + 2(2+3)");
+            Assert.AreEqual(35, parser.Parse("c"));
         }
 
         [TestMethod]
         public void CustomFunctions()
         {
-            /*
-             * This test demonstrates three ways of adding a function
-             * to the Math Parser
-             * 
-             * 1) directly pointing to the function
-             * 2) lambda expression
-             * 3) anonymous method
-             */
             var parser = new MathParser();
             
-            parser.LocalFunctions.Add("numberTimesTwo", NumberTimesTwo);
-            Assert.AreEqual(6, parser.Parse("numberTimesTwo(3)"));
-            
-            parser.LocalFunctions.Add("square", x => x[0] * x[0]);
+            parser.LocalFunctions.Add("timesTwo", inputs => inputs[0] * 2);
+            Assert.AreEqual(6, parser.Parse("timesTwo(3)"));
+            Assert.AreEqual(42, parser.Parse("timesTwo((2+3)(3+1) + 1)"));
+
+            parser.LocalFunctions.Add("square", inputs => inputs[0] * inputs[0]);
             Assert.AreEqual(16, parser.Parse("square(4)"));
             
-            parser.LocalFunctions.Add("cube", delegate(double[] x)
-            {
-                return x[0] * x[0] * x[0];
-            });
-
+            parser.LocalFunctions.Add("cube", inputs => inputs[0] * inputs[0] * inputs[0]);
             Assert.AreEqual(8, parser.Parse("cube(2)"));
         }
         
         [TestMethod]
         public void CustomFunctionsWithSeveralArguments()
         {
-            /*
-             * This example demonstrates the "anonymous method" way of adding
-             * a function that can take more than one agument.
-             */
-
             var parser = new MathParser(false);
             
             parser.LocalFunctions.Add("log", delegate(double[] input)
             {
-                // input[0] is the number
-                // input[1] is the base
-
-                if (input.Length == 1)
-                    return Math.Log(input[0]);
-                if (input.Length == 2)
-                    return Math.Log(input[0], input[1]);
-
-                return 0;
+                switch (input.Length)
+                {
+                    case 1:
+                        return Math.Log10(input[0]);
+                    case 2:
+                        return Math.Log(input[0], input[1]);
+                    default:
+                        return 0;
+                }
             });
 
-            Assert.AreEqual(0.693147181, parser.Parse("log(2)"), 0.000000001);
-            Assert.AreEqual(0.63093, parser.Parse("log(2,3)"), 0.000001);
+            Assert.AreEqual(0.301029996, parser.Parse("log(2)"), 0.000000001);
+            Assert.AreEqual(0.630929754, parser.Parse("log(2,3)"), 0.000000001);
         }
         
         [TestMethod]
@@ -133,7 +111,7 @@ namespace Mathos.Parser.Test
             Assert.AreEqual(1, parser.Parse("--1"));
             Assert.AreEqual(-2, parser.Parse("-2"));
             Assert.AreEqual(-2, parser.Parse("(-2)"));
-            // Assert.AreEqual(2, parser.Parse("-(-2)")); TODO: Fixme
+            // Assert.AreEqual(2, parser.Parse("-(-2)")); TODO: Fix
             Assert.AreEqual(4, parser.Parse("(-2)(-2)"));
         }
 
@@ -148,14 +126,12 @@ namespace Mathos.Parser.Test
         [TestMethod]
         public void CustomizeOperators()
         {
-            var parser = new MathParser
-            {
-                OperatorList = new List<string> {"$", "%", "*", ":", "/", "+", "-", ">", "<", "="}
-            };
+            var parser = new MathParser();
+
+            parser.OperatorList.Add("$");
+            parser.OperatorAction.Add("$", (a, b) => a * 2 + b * 3);
             
-            parser.OperatorAction.Add("$", (numA, numB) => numA*2 + numB*3);
-            
-            Assert.AreEqual(3 * 2 + 3 * 2, parser.Parse("3$2"));
+            Assert.AreEqual(3 * 2 + 3 * 2, parser.Parse("3 $ 2"));
         }
 
         [TestMethod]
@@ -172,8 +148,11 @@ namespace Mathos.Parser.Test
             var timer = new Stopwatch();
             var parser = new MathParser();
 
-            GC.Collect();
+            parser.Parse("5+2*3*1+2((1-2)(2-3))*-1"); // Warm-up
 
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            
             timer.Start();
             
             parser.Parse("5+2");
@@ -182,7 +161,7 @@ namespace Mathos.Parser.Test
 
             timer.Stop();
 
-            Debug.WriteLine("Parse Time: " + timer.ElapsedMilliseconds + "ms");
+            Debug.WriteLine("Parse Time: " + timer.Elapsed.TotalMilliseconds + "ms");
         }
 
         [TestMethod]
