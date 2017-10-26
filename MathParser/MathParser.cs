@@ -50,7 +50,7 @@ namespace Mathos.Parser
         /// When converting the result from the Parse method or ProgrammaticallyParse method ToString(),
         /// please use this culture info.
         /// </summary>
-        public CultureInfo CultureInfo { get; } = CultureInfo.InvariantCulture;
+        public CultureInfo CultureInfo { get; }
 
         #endregion
 
@@ -58,10 +58,11 @@ namespace Mathos.Parser
         /// Initializes a new instance of the MathParser class, and optionally with
         /// predefined functions, operators, and variables.
         /// </summary>
-        /// <param name="loadPreDefinedFunctions">This will load "abs", "cos", "cosh", "arccos", "sin", "sinh", "arcsin", "tan", "tanh", "arctan", "sqrt", "rem", "round"</param>
-        /// <param name="loadPreDefinedOperators">This will load "%", "*", ":", "/", "+", "-", ">", "&lt;", "="</param>
-        /// <param name="loadPreDefinedVariables">This will load "pi", "pi2", "pi05", "pi025", "pi0125", "pitograd", "piofgrad", "e", "phi", "major", "minor"</param>
-        public MathParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true)
+        /// <param name="loadPreDefinedFunctions">This will load abs, cos, cosh, arccos, sin, sinh, arcsin, tan, tanh, arctan, sqrt, rem, and round.</param>
+        /// <param name="loadPreDefinedOperators">This will load %, *, :, /, +, -, >, &lt;, and =</param>
+        /// <param name="loadPreDefinedVariables">This will load pi, tao, e, phi, major, minor, pitograd, and piofgrad.</param>
+        /// <param name="cultureInfo">The culture info to use when parsing. If null, defaults to invariant culture.</param>
+        public MathParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true, CultureInfo cultureInfo = null)
         {
             if (loadPreDefinedOperators)
             {
@@ -171,6 +172,8 @@ namespace Mathos.Parser
             }
             else
                 LocalVariables = new Dictionary<string, double>();
+
+            CultureInfo = cultureInfo ?? CultureInfo.InvariantCulture;
         }
 
         /// <summary>
