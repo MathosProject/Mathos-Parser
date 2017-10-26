@@ -3,17 +3,17 @@ mono:
     - latest
 dotnet: 1.0.4
 dist: trusty
-solution: ./MathParser/MathParser.sln
+solution: ./MathParser.sln
 before_install:
   - mkdir -p .nuget
   - wget -O .nuget/nuget.exe "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
   - mono .nuget/nuget.exe
 install:
-  - mono .nuget/nuget.exe restore ./MathParser/MathParser.sln
+  - mono .nuget/nuget.exe restore ./MathParser.sln
   - mono .nuget/nuget.exe install NUnit.Runners -Version 3.4.1 -OutputDirectory NUnitRunner
 script:
   # .NET Framework
-  - msbuild /p:Configuration=FrameworkBuild /p:TargetFrameworkVersion="v4.0" ./MathParser/MathParser.sln
+  - msbuild /p:Configuration=FrameworkBuild /p:TargetFrameworkVersion="v4.0" ./MathParser.sln
   - mono ./NUnitRunner/NUnit.ConsoleRunner.3.4.1/tools/nunit3-console.exe ./MathParser/UnitTest/bin/NUnitBuild/MathosParserTest.dll
   # .NET Core
   - dotnet restore ./MathParser.NetStandard/MathParser.NetStandard.csproj
