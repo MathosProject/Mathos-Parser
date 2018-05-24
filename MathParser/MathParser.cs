@@ -531,6 +531,3 @@ namespace Mathos.Parser
         #endregion
     }
 }
-
-
-
