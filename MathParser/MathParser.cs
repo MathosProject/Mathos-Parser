@@ -1,9 +1,9 @@
 ﻿/* 
- * Copyright (C) 2012-2017 Mathos Project,
+ * Copyright (C) 2012-2018, Mathos Project.
  * All rights reserved.
  * 
  * Please see the license file in the project folder,
- * or go to https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.
+ * or go to https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.md.
  * 
  * Please feel free to ask me directly at my email!
  *  artem@artemlos.net
