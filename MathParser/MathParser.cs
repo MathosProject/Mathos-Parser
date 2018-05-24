@@ -358,6 +358,19 @@ namespace Mathos.Parser
                     continue;
                 }
 
+                if(ch == '.')
+                {
+                    token += ch;
+
+                    while (i + 1 < expr.Length && char.IsDigit(expr[i + 1]))
+                        token += expr[++i];
+
+                    tokens.Add(token);
+                    token = "";
+
+                    continue;
+                }
+
                 if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
                     (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(
 #if !NETSTANDARD1_4 
