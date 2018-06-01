@@ -296,6 +296,8 @@ namespace Mathos.Parser.Test
             Assert.AreEqual(0.5, parser.Parse(".5"));
             Assert.AreEqual(0.5, parser.Parse(".25 + .25"));
             Assert.AreEqual(2.0, parser.Parse("1.5 + .5"));
+            Assert.AreEqual(-0.25, parser.Parse(".25 + (-.5)"));
+            Assert.AreEqual(0.25, parser.Parse(".5(.5)"));
         }
 
         public class BenchmarkUtil
