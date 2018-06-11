@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.4;netstandard2.0;net40;net46;net47;net471</TargetFrameworks>
+    <TargetFrameworks>netstandard1.4;netstandard2.0;net40;net46;net461;net462;net47;net471</TargetFrameworks>
     <RootNamespace>Mathos.Parser</RootNamespace>
   </PropertyGroup>
 </Project>
