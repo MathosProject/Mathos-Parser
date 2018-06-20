@@ -8,6 +8,8 @@ Mathos Parser
 * The PCL compliant version: https://github.com/MathosProject/Mathos-Parser-Portable
 * The CIL version (compiles expressions into IL code): https://github.com/MathosProject/Mathos-Parser-CIL
 
+You can find documentation and examples on the [wiki](https://github.com/MathosProject/Mathos-Parser/wiki).
+
 ## Features
 
 * Parse mathematical expressions.
