@@ -3,7 +3,7 @@
 
 Mathos Parser
 =============
-**Mathos Parser** is a mathematical expression parser targeting the .NET Framework and .NET Standard that parses all kinds of mathematical expressions with the ability to use custom functions, operators, and variables.
+**Mathos Parser** is a mathematical expression parser for the .NET Framework and .NET Standard. It can parse all kinds of mathematical expressions with the ability to use custom functions, operators, and variables.
 
 * The CIL version (compiles expressions into IL code): https://github.com/MathosProject/Mathos-Parser-CIL
 
@@ -11,8 +11,7 @@ You can find documentation and examples on the [wiki](https://github.com/MathosP
 
 ## Features
 
-* Parse mathematical expressions.
-* Add conditional statements.
+* Parse and execute mathematical expressions.
 * Customize and override existing operators, functions, and variables.
 * Supports common mathematical functions, such as pow, round, sqrt, rem, and abs.
 * Culture independent.
@@ -20,35 +19,43 @@ You can find documentation and examples on the [wiki](https://github.com/MathosP
 
 ## Introduction
 
-Mathos Parser is a part of Mathos Project, a project that aims to provide useful methods, structures, and utilities, to make life easier! This math parser is fully independent of the Mathos Core Library, so you can use this library to achieve powerful math parsing without external dependencies.
+Mathos Parser is a part of the Mathos Project, a project that aims to provide useful methods, structures, and utilities to make life easier! This math parser is fully independent of the Mathos Core Library, so you can use this library to achieve powerful math parsing without external dependencies.
 
 ## How to use
 
 It's really easy to use and understand. In this topic I will try to show you some key features of the library.
 
+* Custom variables
 * Custom operators
 * Custom functions
-* Multi-argument functions
-* Custom variables
 * Variables through parsing
+* Multi-argument functions
 
-### Custom Operators
-
+### Custom Variables
 ```csharp
 // Create a parser.
 MathParser parser = new MathParser();
 
-// Add the operator to the operator list.
-parser.OperatorList.Add("^");
+// Add a variable.
+parser.LocalVariables.Add("a", 25);
 
-// Add an action for the newly added operator.
-parser.OperatorAction.Add("^", delegate(double numA, double numB)
-{
-    return (decimal) Math.Pow((double) numA, (double) numB);
-});
+// How about another.
+parser.LocalVariables.Add("猫", 5);
 
 // Parsing
-Assert.IsTrue(parser.Parse("3^2") == Math.Pow(3,2));
+Assert.AreEqual(30, parser.Parse("a + 猫"));
+```
+
+### Custom Operators
+```csharp
+// Create a parser.
+MathParser parser = new MathParser();
+
+// Add a custom operator
+parser.Operators.Add("λ", (left, right) => Math.Pow(left, right));
+
+// Parsing
+Assert.AreEqual(Math.Pow(3, 2), parser.Parse("3 λ 2"));
 ```
 
 ### Custom Functions
@@ -56,47 +63,11 @@ Assert.IsTrue(parser.Parse("3^2") == Math.Pow(3,2));
 // Create a parser.
 MathParser parser = new MathParser();
 
-// Add the function and its contents.
+// Add the function and its implementation.
 parser.LocalFunctions.Add("timesTwo", inputs => inputs[0] * 2);
 
 // Parsing
-Assert.IsTrue(parser.Parse("timesTwo(4)") == 8);
-```
-
-### Multi-Argument Functions
-```csharp
-// Create a parser.
-MathParser parser = new MathParser();
-
-// Add the function and its contents.
-parser.LocalFunctions.Add("log", delegate(double[] inputs)
-{
-    // inputs[0] is the number.
-    // inputs[1] is the base (optional).
-    
-    if(inputs.Length == 1)
-        return Math.Log(inputs[0]);
-    else if(inputs.Length == 2)
-        return Math.Log(inputs[0], inputs[1]);
-    else
-        return 0; // Error.
-});
-
-// Parsing
-Assert.IsTrue(parser.Parse("log(100)") == 2);
-Assert.IsTrue(parser.Parse("log(8, 2)") == 3);
-```
-
-### Custom Variables
-```csharp
-// Create a parser.
-MathParser parser = new MathParser();
-
-// Add the variable.
-parser.LocalVariables.Add("a", 25);
-
-// Parsing
-Assert.IsTrue(parser.Parse("a+5") == 30);
+Assert.AreEqual(8, parser.Parse("timesTwo(4)"));
 ```
 
 ### Variables Through Parsing
@@ -104,9 +75,41 @@ Assert.IsTrue(parser.Parse("a+5") == 30);
 // Create a parser.
 MathParser parser = new MathParser();
 
-// Add the variable
+// Define the variable
 parser.ProgrammaticallyParse("let a = 25");
 
 // Parsing
-Assert.IsTrue(parser.Parse("a+5") == 30);
+Assert.AreEqual(30, parser.Parse("a + 5"));
+```
+
+### Multi-Argument Functions
+```csharp
+// Create a parser.
+MathParser parser = new MathParser();
+
+// Add the function and its implementation.
+parser.LocalFunctions.Add("clamp", delegate (double[] inputs)
+{
+    // The value.
+    var value = inputs[0];
+
+    // The maximum value.
+    var min = inputs[1];
+
+    // The minimum value.
+    var max = inputs[2];
+
+    if (value > max)
+        return max;
+
+    if (value < min)
+        return min;
+
+    return value;
+});
+
+// Parsing
+Assert.AreEqual(3, parser.Parse("clamp(3,-1,5)"));
+Assert.AreEqual(-1, parser.Parse("clamp(-5,-1,5)"));
+Assert.AreEqual(5, parser.Parse("clamp(8,-1,5)"));
 ```
