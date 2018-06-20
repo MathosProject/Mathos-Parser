@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.md)
 [![NuGet](https://img.shields.io/nuget/dt/MathosParser.svg)](https://www.nuget.org/packages/MathosParser/)
 
 Mathos Parser
