@@ -2,14 +2,7 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 
-#if NUNIT
-using NUnit.Framework;
-using Assert = NUnit.Framework.Assert;
-using TestMethod = NUnit.Framework.TestAttribute;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace Mathos.Parser.Test
 {
