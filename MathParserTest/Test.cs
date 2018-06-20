@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -120,9 +119,8 @@ namespace Mathos.Parser.Test
         public void CustomizeOperators()
         {
             var parser = new MathParser();
-
-            parser.OperatorList.Add("$");
-            parser.OperatorAction.Add("$", (a, b) => a * 2 + b * 3);
+            
+            parser.Operators.Add("$", (a, b) => a * 2 + b * 3);
             
             Assert.AreEqual(3 * 2 + 3 * 2, parser.Parse("3 $ 2"));
         }
@@ -191,12 +189,12 @@ namespace Mathos.Parser.Test
         [TestMethod]
         public void StrangeStuff()
         {
-            var parser = new MathParser {OperatorList = new List<string>() {"times", "*", "dividedby", "/", "plus", "+", "minus", "-"}};
+            var parser = new MathParser();
 
-            parser.OperatorAction.Add("times", (x, y) => x * y);
-            parser.OperatorAction.Add("dividedby", (x, y) => x / y);
-            parser.OperatorAction.Add("plus", (x, y) => x + y);
-            parser.OperatorAction.Add("minus", (x, y) => x - y);
+            parser.Operators.Add("times", (x, y) => x * y);
+            parser.Operators.Add("dividedby", (x, y) => x / y);
+            parser.Operators.Add("plus", (x, y) => x + y);
+            parser.Operators.Add("minus", (x, y) => x - y);
 
             Debug.WriteLine(parser.Parse("5 plus 3 dividedby 2 times 3").ToString(parser.CultureInfo));
         }

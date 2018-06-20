@@ -25,16 +25,9 @@ namespace Mathos.Parser
         #region Properties
 
         /// <summary>
-        /// All operators should be inside this property.
-        /// The first operator is executed first, et cetera.
-        /// An operator may only be ONE character.
+        /// All operators that you want to define should be inside this property.
         /// </summary>
-        public List<string> OperatorList { get; set; }
-
-        /// <summary>
-        /// When adding a variable in the OperatorList property, you need to assign how that operator should work.
-        /// </summary>
-        public Dictionary<string, Func<double, double, double>> OperatorAction { get; set; }
+        public Dictionary<string, Func<double, double, double>> Operators { get; set; }
 
         /// <summary>
         /// All functions that you want to define should be inside this property.
@@ -66,22 +59,7 @@ namespace Mathos.Parser
         {
             if (loadPreDefinedOperators)
             {
-                OperatorList = new List<string>(10)
-                {
-                    "^",
-                    "%",
-                    ":",
-                    "/",
-                    "*",
-                    "-",
-                    "+",
-
-                    ">",
-                    "<",
-                    "="
-                };
-
-                OperatorAction = new Dictionary<string, Func<double, double, double>>(10)
+                Operators = new Dictionary<string, Func<double, double, double>>(10)
                 {
                     ["^"] = Math.Pow,
                     ["%"] = (a, b) => a % b,
@@ -90,17 +68,14 @@ namespace Mathos.Parser
                     ["*"] = (a, b) => a * b,
                     ["-"] = (a, b) => a - b,
                     ["+"] = (a, b) => a + b,
-                    
+
                     [">"] = (a, b) => a > b ? 1 : 0,
                     ["<"] = (a, b) => a < b ? 1 : 0,
                     ["="] = (a, b) => Math.Abs(a - b) < 0.00000001 ? 1 : 0
                 };
             }
             else
-            {
-                OperatorList = new List<string>();
-                OperatorAction = new Dictionary<string, Func<double, double, double>>();
-            }
+                Operators = new Dictionary<string, Func<double, double, double>>();
 
             if (loadPreDefinedFunctions)
             {
@@ -372,11 +347,11 @@ namespace Mathos.Parser
                 }
 
                 if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
-                    (i == 0 || OperatorList.IndexOf(expr[i - 1].ToString(
+                    (i == 0 || Operators.ContainsKey(expr[i - 1].ToString(
 #if !NETSTANDARD1_4 
                         CultureInfo 
 #endif
-                        )) != -1 ||
+                        )) ||
                      i - 1 > 0 && expr[i - 1] == '('))
                 {
                     // if the above is true, then the token for that negative number will be "-1", not "-","1".
@@ -514,30 +489,32 @@ namespace Mathos.Parser
 
                     if (op == "-" || op == "+")
                     {
-                        return double.Parse((op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-")) + tokens[1], CultureInfo);
+                        var first = op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-");
+
+                        return double.Parse(first + tokens[1], CultureInfo);
                     }
 
-                    return OperatorAction[op](0, double.Parse(tokens[1], CultureInfo));
+                    return Operators[op](0, double.Parse(tokens[1], CultureInfo));
                 case 0:
                     return 0;
             }
 
-            foreach (var op in OperatorList)
+            foreach (var op in Operators)
             {
-                while (tokens.IndexOf(op) != -1)
+                int opPlace;
+                
+                while ((opPlace = tokens.IndexOf(op.Key)) != -1)
                 {
-                    var opPlace = tokens.IndexOf(op);
-
                     var numberA = double.Parse(tokens[opPlace - 1], CultureInfo);
                     var numberB = double.Parse(tokens[opPlace + 1], CultureInfo);
 
-                    var result = OperatorAction[op](numberA, numberB);
+                    var result = op.Value(numberA, numberB);
 
                     tokens[opPlace - 1] = result.ToString(CultureInfo);
                     tokens.RemoveRange(opPlace, 2);
                 }
             }
-
+            
             return double.Parse(tokens[0], CultureInfo);
         }
 
