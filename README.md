@@ -1,8 +1,9 @@
-[![Build Status](https://travis-ci.org/MathosProject/Mathos-Parser.svg?branch=master)](https://travis-ci.org/MathosProject/Mathos-Parser)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![NuGet](https://img.shields.io/nuget/dt/MathosParser.svg)](https://www.nuget.org/packages/MathosParser/)
 
 Mathos Parser
 =============
-**Mathos Parser** is a mathematical expression parser built on top of the .NET Framework, which parses all kinds of mathematical expressions with the ability to use custom functions, operators, and variables.
+**Mathos Parser** is a mathematical expression parser targeting the .NET Framework and .NET Standard that parses all kinds of mathematical expressions with the ability to use custom functions, operators, and variables.
 
 * The PCL compliant version: https://github.com/MathosProject/Mathos-Parser-Portable
 * The CIL version (compiles expressions into IL code): https://github.com/MathosProject/Mathos-Parser-CIL
