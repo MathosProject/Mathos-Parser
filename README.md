@@ -5,7 +5,6 @@ Mathos Parser
 =============
 **Mathos Parser** is a mathematical expression parser targeting the .NET Framework and .NET Standard that parses all kinds of mathematical expressions with the ability to use custom functions, operators, and variables.
 
-* The PCL compliant version: https://github.com/MathosProject/Mathos-Parser-Portable
 * The CIL version (compiles expressions into IL code): https://github.com/MathosProject/Mathos-Parser-CIL
 
 You can find documentation and examples on the [wiki](https://github.com/MathosProject/Mathos-Parser/wiki).
