@@ -165,25 +165,13 @@ namespace Mathos.Parser.Test
         }
 
         [TestMethod]
-#if !NUNIT
         [ExpectedException(typeof(ArithmeticException))]
-#endif
         public void ExceptionCatching()
         {
             var parser = new MathParser();
 
-#if NUNIT
-            TestDelegate expectException = () =>
-            {
-                parser.Parse("(-1");
-                parser.Parse("rem(20,1,,,,)");
-            };
-
-            Assert.Throws(typeof(ArithmeticException), expectException);
-#else
             parser.Parse("(-1");
             parser.Parse("rem(20,1,,,,)");
-#endif
         }
 
         [TestMethod]
