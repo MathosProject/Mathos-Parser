@@ -505,20 +505,17 @@ namespace Mathos.Parser
                 
                 while ((opPlace = tokens.IndexOf(op.Key)) != -1)
                 {
-                    double numberA = 0;
                     var numberB = double.Parse(tokens[opPlace + 1], CultureInfo);
 
                     if (op.Key == "-" && opPlace == 0)
                     {
-                        numberA = 0;
-                        var result = op.Value(numberA, numberB);
+                        var result = op.Value(0.0, numberB);
                         tokens[0] = result.ToString(CultureInfo);
                         tokens.RemoveRange(opPlace + 1, 1);
                     }
                     else
                     {
-                        numberA = double.Parse(tokens[opPlace - 1], CultureInfo);
-                        var result = op.Value(numberA, numberB);
+                        var result = op.Value(double.Parse(tokens[opPlace - 1], CultureInfo), numberB);
                         tokens[opPlace - 1] = result.ToString(CultureInfo);
                         tokens.RemoveRange(opPlace, 2);
                     }
