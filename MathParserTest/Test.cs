@@ -105,6 +105,11 @@ namespace Mathos.Parser.Test
             Assert.AreEqual(-2, parser.Parse("(-2)"));
             // Assert.AreEqual(2, parser.Parse("-(-2)")); TODO: Fix
             Assert.AreEqual(4, parser.Parse("(-2)(-2)"));
+
+            parser.LocalVariables.Add("x", 50);
+
+            Assert.AreEqual(-100, parser.Parse("-x - x"));
+            Assert.AreEqual(-75, parser.Parse("-x * 1.5"));
         }
 
         [TestMethod]
