@@ -13,7 +13,6 @@ using System;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace Mathos.Parser
 {
@@ -178,7 +177,7 @@ namespace Mathos.Parser
         /// </summary>
         /// <param name="mathExpression">The math expression to parse.</param>
         /// <returns>The result of executing <paramref name="mathExpression"/>.</returns>
-        public double Parse(ReadOnlyCollection<string> mathExpression)
+        public double Parse(IReadOnlyCollection<string> mathExpression)
         {
             return MathParserLogic(new List<string>(mathExpression));
         }
@@ -276,9 +275,9 @@ namespace Mathos.Parser
         /// </summary>
         /// <param name="mathExpression">The math expression to tokenize.</param>
         /// <returns>The resulting tokens of <paramref name="mathExpression"/>.</returns>
-        public ReadOnlyCollection<string> GetTokens(string mathExpression)
+        public IReadOnlyCollection<string> GetTokens(string mathExpression)
         {
-            return Lexer(mathExpression).AsReadOnly();
+            return Lexer(mathExpression);
         }
 
         #region Core
