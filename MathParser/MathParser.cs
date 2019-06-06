@@ -116,7 +116,7 @@ namespace Mathos.Parser
                     ["floor"] = inputs => Math.Floor(inputs[0]),
                     ["ceil"] = inputs => Math.Ceiling(inputs[0]),
                     ["ceiling"] = inputs => Math.Ceiling(inputs[0]),
-                    ["round"] = inputs => Math.Round(inputs[0]),
+                    ["round"] = inputs => Math.Round(inputs[0], MidpointRounding.AwayFromZero),
                     ["truncate"] = inputs => inputs[0] < 0 ? -Math.Floor(-inputs[0]) : Math.Floor(inputs[0]),
 
                     ["log"] = inputs =>
