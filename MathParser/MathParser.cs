@@ -372,17 +372,14 @@ namespace Mathos.Parser
                     continue;
                 }
 
-                if (i + 1 < expr.Length && (ch == '-' || ch == '+') && char.IsDigit(expr[i + 1]) &&
-                    (i == 0 || Operators.ContainsKey(expr[i - 1].ToString(
-#if !NETSTANDARD1_4 
-                        CultureInfo 
-#endif
-                        )) ||
-                     i - 1 > 0 && expr[i - 1] == '('))
+                if (i + 1 < expr.Length &&
+                    (ch == '-' || ch == '+') &&
+                    char.IsDigit(expr[i + 1]) &&
+                    (i == 0 || (tokens.Count > 0 && Operators.ContainsKey(tokens.Last())) || i - 1 > 0 && expr[i - 1] == '('))
                 {
                     // if the above is true, then the token for that negative number will be "-1", not "-","1".
                     // to sum up, the above will be true if the minus sign is in front of the number, but
-                    // at the beginning, for example, -1+2, or, when it is inside the brakets (-1).
+                    // at the beginning, for example, -1+2, or, when it is inside the brakets (-1), or when it comes after another operator.
                     // NOTE: this works for + as well!
 
                     token += ch;
