@@ -22,6 +22,10 @@ namespace Mathos.Parser
     /// </summary>
     public class MathParser
     {
+        private const char GEQ_SIGN = (char)8805;
+        private const char LEQ_SIGN = (char)8804;
+        private const char NEQ_SIGN = (char)8800;
+
         #region Properties
 
         /// <summary>
@@ -59,7 +63,7 @@ namespace Mathos.Parser
         {
             if (loadPreDefinedOperators)
             {
-                Operators = new Dictionary<string, Func<double, double, double>>(10)
+                Operators = new Dictionary<string, Func<double, double, double>>()
                 {
                     ["^"] = Math.Pow,
                     ["%"] = (a, b) => a % b,
@@ -71,15 +75,19 @@ namespace Mathos.Parser
 
                     [">"] = (a, b) => a > b ? 1 : 0,
                     ["<"] = (a, b) => a < b ? 1 : 0,
+                    ["" + GEQ_SIGN] = (a, b) => a > b || Math.Abs(a - b) < 0.00000001 ? 1 : 0,
+                    ["" + LEQ_SIGN] = (a, b) => a < b || Math.Abs(a - b) < 0.00000001 ? 1 : 0,
+                    ["" + NEQ_SIGN] = (a, b) => Math.Abs(a - b) < 0.00000001 ? 0 : 1,
                     ["="] = (a, b) => Math.Abs(a - b) < 0.00000001 ? 1 : 0
                 };
             }
             else
+            {
                 Operators = new Dictionary<string, Func<double, double, double>>();
-
+            }
             if (loadPreDefinedFunctions)
             {
-                LocalFunctions = new Dictionary<string, Func<double[], double>>(26)
+                LocalFunctions = new Dictionary<string, Func<double[], double>>()
                 {
                     ["abs"] = inputs => Math.Abs(inputs[0]),
 
@@ -129,8 +137,9 @@ namespace Mathos.Parser
                 };
             }
             else
+            {
                 LocalFunctions = new Dictionary<string, Func<double[], double>>();
-
+            }
             if (loadPreDefinedVariables)
             {
                 LocalVariables = new Dictionary<string, double>(8)
@@ -148,8 +157,9 @@ namespace Mathos.Parser
                 };
             }
             else
+            {
                 LocalVariables = new Dictionary<string, double>();
-
+            }
             CultureInfo = cultureInfo ?? CultureInfo.InvariantCulture;
         }
 
@@ -228,15 +238,20 @@ namespace Mathos.Parser
                 varValue = Parse(mathExpression);
 
                 if (LocalVariables.ContainsKey(varName))
+                {
                     LocalVariables[varName] = varValue;
+                }
                 else
+                {
                     LocalVariables.Add(varName, varValue);
-
+                }
                 return varValue;
             }
 
             if (!mathExpression.Contains(":="))
+            {
                 return Parse(mathExpression);
+            }
 
             //mathExpression = mathExpression.Replace(" ", ""); // remove white space
             varName = mathExpression.Substring(0, mathExpression.IndexOf(":=", StringComparison.Ordinal));
@@ -246,10 +261,13 @@ namespace Mathos.Parser
             varName = varName.Replace(" ", "");
 
             if (LocalVariables.ContainsKey(varName))
+            {
                 LocalVariables[varName] = varValue;
+            }
             else
+            {
                 LocalVariables.Add(varName, varValue);
-
+            }
             return varValue;
         }
 
@@ -274,10 +292,8 @@ namespace Mathos.Parser
         {
             // Word corrections
 
-            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(atan2|arctan2)\\b", "arctan2",
-                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(sqr|sqrt)\\b", "sqrt", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            input = System.Text.RegularExpressions.Regex.Replace(input, "\\b(atan2|arctan2)\\b", "arctan2", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             //... and more
 
             return input;
@@ -296,24 +312,33 @@ namespace Mathos.Parser
             expr = expr.Replace("+-", "-");
             expr = expr.Replace("-+", "-");
             expr = expr.Replace("--", "+");
+            expr = expr.Replace("==", "=");
+            expr = expr.Replace(">=", "" + GEQ_SIGN);
+            expr = expr.Replace("<=", "" + LEQ_SIGN);
+            expr = expr.Replace("!=", "" + NEQ_SIGN);
 
             for (var i = 0; i < expr.Length; i++)
             {
                 var ch = expr[i];
 
                 if (char.IsWhiteSpace(ch))
+                {
                     continue;
+                }
 
                 if (char.IsLetter(ch))
                 {
                     if (i != 0 && (char.IsDigit(expr[i - 1]) || expr[i - 1] == ')'))
+                    {
                         tokens.Add("*");
+                    }
 
                     token += ch;
 
                     while (i + 1 < expr.Length && char.IsLetterOrDigit(expr[i + 1]))
+                    {
                         token += expr[++i];
-
+                    }
                     tokens.Add(token);
                     token = "";
 
@@ -325,21 +350,23 @@ namespace Mathos.Parser
                     token += ch;
 
                     while (i + 1 < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
+                    {
                         token += expr[++i];
-
+                    }
                     tokens.Add(token);
                     token = "";
 
                     continue;
                 }
 
-                if(ch == '.')
+                if (ch == '.')
                 {
                     token += ch;
 
                     while (i + 1 < expr.Length && char.IsDigit(expr[i + 1]))
+                    {
                         token += expr[++i];
-
+                    }
                     tokens.Add(token);
                     token = "";
 
@@ -378,10 +405,14 @@ namespace Mathos.Parser
                         tokens.Add("(");
                     }
                     else
+                    {
                         tokens.Add("(");
+                    }
                 }
                 else
+                {
                     tokens.Add(ch.ToString());
+                }
             }
 
             return tokens;
@@ -393,7 +424,9 @@ namespace Mathos.Parser
             for (var i = 0; i < tokens.Count; i++)
             {
                 if (LocalVariables.Keys.Contains(tokens[i]))
+                {
                     tokens[i] = LocalVariables[tokens[i]].ToString(CultureInfo);
+                }
             }
 
             while (tokens.IndexOf("(") != -1)
@@ -403,13 +436,16 @@ namespace Mathos.Parser
                 var close = tokens.IndexOf(")", open); // in case open is -1, i.e. no "(" // , open == 0 ? 0 : open - 1
 
                 if (open >= close)
+                {
                     throw new ArithmeticException("No closing bracket/parenthesis. Token: " + open.ToString(CultureInfo));
+                }
 
                 var roughExpr = new List<string>();
 
                 for (var i = open + 1; i < close; i++)
+                {
                     roughExpr.Add(tokens[i]);
-
+                }
                 double tmpResult;
 
                 var args = new List<double>();
@@ -429,8 +465,9 @@ namespace Mathos.Parser
                                     : roughExpr.Count;
 
                             while (i < firstCommaOrEndOfExpression)
+                            {
                                 defaultExpr.Add(roughExpr[i++]);
-
+                            }
                             args.Add(defaultExpr.Count == 0 ? 0 : BasicArithmeticalExpression(defaultExpr));
                         }
 
@@ -502,7 +539,7 @@ namespace Mathos.Parser
             foreach (var op in Operators)
             {
                 int opPlace;
-                
+
                 while ((opPlace = tokens.IndexOf(op.Key)) != -1)
                 {
                     var rhs = double.Parse(tokens[opPlace + 1], CultureInfo);
@@ -521,7 +558,7 @@ namespace Mathos.Parser
                     }
                 }
             }
-            
+
             return double.Parse(tokens[0], CultureInfo);
         }
 
