@@ -9,20 +9,10 @@
     <PackageLicenseUrl>https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/MathosProject/Mathos-Parser</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MathosProject/Mathos-Parser</RepositoryUrl>
-    <Copyright>Copyright © 2012-2018, Mathos Project.</Copyright>
+    <Copyright>Copyright © 2012-2019, Mathos Project.</Copyright>
     <Authors>Mathos Project</Authors>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReleaseNotes>Release notes v2.0.0
-
-.Net Standard version added.
-Dropped support of decimal in favor of double.
-OperatorList has been removed (OperatorAction is now Operators).
-Can now initialize CultureInfo through the constructor.
-Added ln, acos, asin, atan, and ceil to the list of predefined functions.
-Can now omit the leading zero before decimal points.
-Minor performance improvements.
-Updates to XML-comments.
-Other small changes and improvements.</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
   </PropertyGroup>
 </Project>
