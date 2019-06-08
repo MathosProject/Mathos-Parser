@@ -39,6 +39,12 @@ namespace Mathos.Parser.Test
             Assert.AreEqual(0, parser.Parse("2 + 2 = 22"));
             Assert.AreEqual(0, parser.Parse("(2+3)(3+1) > 50 - 20"));
             Assert.AreEqual(0, parser.Parse("100 < 10"));
+
+            Assert.AreEqual(1, parser.Parse("2.5 <= 3"));
+            Assert.AreEqual(1, parser.Parse("(2+3)(3+1) <= 50 - 20"));
+
+            Assert.AreEqual(0, parser.Parse("100 <= 10"));
+            Assert.AreEqual(0, parser.Parse("(2+3)(3+1) >= 50 - 20"));
         }
 
         [TestMethod]
