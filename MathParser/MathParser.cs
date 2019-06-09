@@ -557,9 +557,9 @@ namespace Mathos.Parser
                     {
                         var first = op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-");
 
-                        if (!double.TryParse(tokens[1], NumberStyles.Number, CultureInfo, out token1))
+                        if (!double.TryParse(first + tokens[1], NumberStyles.Number, CultureInfo, out token1))
                         {
-                            throw new MathParserException("local variable " + tokens[1] + " is undefined");
+                            throw new MathParserException("local variable " + first + tokens[1] + " is undefined");
                         }
                         return token1;
                     }
