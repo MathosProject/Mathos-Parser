@@ -48,18 +48,24 @@ namespace Mathos.Parser
         /// </summary>
         public CultureInfo CultureInfo { get; }
 
+        /// <summary>
+        /// The random number generator used to generate random values, when the random() operator is used
+        /// </summary>
+        public Random Random { get; set; }
+
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the MathParser class, and optionally with
         /// predefined functions, operators, and variables.
         /// </summary>
-        /// <param name="loadPreDefinedFunctions">This will load abs, cos, cosh, arccos, sin, sinh, arcsin, tan, tanh, arctan, sqrt, rem, and round.</param>
         /// <param name="loadPreDefinedOperators">This will load %, *, :, /, +, -, >, &lt;, and =</param>
+        /// <param name="loadPreDefinedFunctions">This will load abs, cos, cosh, arccos, sin, sinh, arcsin, tan, tanh, arctan, sqrt, rem, round, and random.</param>
         /// <param name="loadPreDefinedVariables">This will load pi, tao, e, phi, major, minor, pitograd, and piofgrad.</param>
         /// <param name="cultureInfo">The culture info to use when parsing. If null, defaults to invariant culture.</param>
         public MathParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true, CultureInfo cultureInfo = null)
         {
+            Random = new Random();
             if (loadPreDefinedOperators)
             {
                 Operators = new Dictionary<string, Func<double, double, double>>()
@@ -130,6 +136,20 @@ namespace Mathos.Parser
                             default:
                                 return 0;
                         }
+                    },
+
+                    ["random"] = inputs =>
+                    {
+                        if (inputs.Length == 0 || (inputs.Length == 1 && inputs[0] == 0))
+                        {
+                            inputs = new double[1];
+                            inputs[0] = 1;
+                        }
+                        if (inputs.Length == 2)
+                        {
+                            return Random.NextDouble() * (inputs[1] - inputs[0]) + inputs[0];
+                        }
+                        return Random.NextDouble() * inputs[0];
                     },
 
                     ["ln"] = inputs => Math.Log(inputs[0])
