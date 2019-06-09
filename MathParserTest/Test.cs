@@ -103,7 +103,43 @@ namespace Mathos.Parser.Test
             Assert.AreEqual(0.301029996, parser.Parse("log(2)"), 0.000000001);
             Assert.AreEqual(0.630929754, parser.Parse("log(2,3)"), 0.000000001);
         }
-        
+
+        [TestMethod]
+        [ExpectedException(typeof(MathParserException))]
+        public void UndefinedVariableException()
+        {
+            var parser = new MathParser();
+
+            try
+            {
+                parser.ProgrammaticallyParse("unknownvar * 5");
+            }
+            catch (Exception e)
+            {
+                // Tests to see if the message the exception gives is clear enough
+                Assert.IsTrue(e.Message.ToLowerInvariant().Contains("variable") && e.Message.ToLowerInvariant().Contains("unknownvar"));
+                throw e;
+            }
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(MathParserException))]
+        public void UndefinedOperatorException()
+        {
+            var parser = new MathParser();
+
+            try
+            {
+                parser.ProgrammaticallyParse("unknownoperator(5)");
+            }
+            catch (Exception e)
+            {
+                // Tests to see if the message the exception gives is clear enough
+                Assert.IsTrue(e.Message.ToLowerInvariant().Contains("operator") && e.Message.ToLowerInvariant().Contains("unknownoperator"));
+                throw e;
+            }
+        }
+
         [TestMethod]
         public void NegativeNumbers()
         {
