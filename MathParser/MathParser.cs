@@ -385,8 +385,9 @@ namespace Mathos.Parser
                     token += ch;
 
                     while (i + 1 < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
+                    {
                         token += expr[++i];
-
+                    }
                     tokens.Add(token);
                     token = "";
 
@@ -513,10 +514,16 @@ namespace Mathos.Parser
             // THIS METHOD CAN ONLY OPERATE WITH NUMBERS AND OPERATORS
             // AND WILL NOT UNDERSTAND ANYTHING BEYOND THAT.
 
+            double token0;
+            double token1;
             switch (tokens.Count)
             {
                 case 1:
-                    return double.Parse(tokens[0], CultureInfo);
+                    if (!double.TryParse(tokens[0], NumberStyles.Number, CultureInfo, out token0))
+                    {
+                        throw new MissingFieldException("local variable " + tokens[0] + " is undefined");
+                    }
+                    return token0;
                 case 2:
                     var op = tokens[0];
 
@@ -524,10 +531,22 @@ namespace Mathos.Parser
                     {
                         var first = op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-");
 
-                        return double.Parse(first + tokens[1], CultureInfo);
+                        if (!double.TryParse(tokens[1], NumberStyles.Number, CultureInfo, out token1))
+                        {
+                            throw new MissingFieldException("local variable " + tokens[1] + " is undefined");
+                        }
+                        return token1;
                     }
 
-                    return Operators[op](0, double.Parse(tokens[1], CultureInfo));
+                    if (!Operators.ContainsKey(op))
+                    {
+                        throw new MissingMethodException("operator " + op + " is not defined");
+                    }
+                    if (!double.TryParse(tokens[1], NumberStyles.Number, CultureInfo, out token1))
+                    {
+                        throw new MissingFieldException("local variable " + tokens[1] + " is undefined");
+                    }
+                    return Operators[op](0, token1);
                 case 0:
                     return 0;
             }
@@ -538,7 +557,11 @@ namespace Mathos.Parser
 
                 while ((opPlace = tokens.IndexOf(op.Key)) != -1)
                 {
-                    var rhs = double.Parse(tokens[opPlace + 1], CultureInfo);
+                    double rhs;
+                    if (!double.TryParse(tokens[opPlace + 1], NumberStyles.Number, CultureInfo, out rhs))
+                    {
+                        throw new MissingFieldException("local variable " + tokens[opPlace + 1] + " is undefined");
+                    }
 
                     if (op.Key == "-" && opPlace == 0)
                     {
@@ -548,14 +571,24 @@ namespace Mathos.Parser
                     }
                     else
                     {
-                        var result = op.Value(double.Parse(tokens[opPlace - 1], CultureInfo), rhs);
+                        double lhs;
+                        if (!double.TryParse(tokens[opPlace - 1], NumberStyles.Number, CultureInfo, out lhs))
+                        {
+                            throw new MissingFieldException("local variable " + tokens[opPlace - 1] + " is undefined");
+                        }
+
+                        var result = op.Value(lhs, rhs);
                         tokens[opPlace - 1] = result.ToString(CultureInfo);
                         tokens.RemoveRange(opPlace, 2);
                     }
                 }
             }
 
-            return double.Parse(tokens[0], CultureInfo);
+            if (!double.TryParse(tokens[0], NumberStyles.Number, CultureInfo, out token0))
+            {
+                throw new MissingFieldException("local variable " + tokens[0] + " is undefined");
+            }
+            return token0;
         }
 
         #endregion
