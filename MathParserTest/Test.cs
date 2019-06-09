@@ -60,6 +60,10 @@ namespace Mathos.Parser.Test
             
             parser.ProgrammaticallyParse("let c be 25 + 2(2+3)");
             Assert.AreEqual(35, parser.Parse("c"));
+
+            parser.VariableDeclarator = "dim";
+            parser.ProgrammaticallyParse("dim d = 5 ^3");
+            Assert.AreEqual(125, parser.Parse("d"));
         }
 
         [TestMethod]
