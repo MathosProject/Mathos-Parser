@@ -53,6 +53,11 @@ namespace Mathos.Parser
         /// </summary>
         public Random Random { get; set; }
 
+        /// <summary>
+        /// The string which is used to declare a variable. Default is "let"
+        /// </summary>
+        public string VariableDeclarator { get; set; }
+
         #endregion
 
         /// <summary>
@@ -65,6 +70,7 @@ namespace Mathos.Parser
         /// <param name="cultureInfo">The culture info to use when parsing. If null, defaults to invariant culture.</param>
         public MathParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true, CultureInfo cultureInfo = null)
         {
+            VariableDeclarator = "let";
             Random = new Random();
             if (loadPreDefinedOperators)
             {
@@ -234,25 +240,25 @@ namespace Mathos.Parser
             string varName;
             double varValue;
 
-            if (mathExpression.Contains("let"))
+            if (mathExpression.Contains(VariableDeclarator))
             {
                 if (mathExpression.Contains("be"))
                 {
-                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3,
+                    varName = mathExpression.Substring(mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) + 3,
                         mathExpression.IndexOf("be", StringComparison.Ordinal) -
-                        mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
+                        mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) - 3);
                     mathExpression = mathExpression.Replace(varName + "be", "");
                 }
                 else
                 {
-                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3,
+                    varName = mathExpression.Substring(mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) + 3,
                         mathExpression.IndexOf("=", StringComparison.Ordinal) -
-                        mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
+                        mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) - 3);
                     mathExpression = mathExpression.Replace(varName + "=", "");
                 }
 
                 varName = varName.Replace(" ", "");
-                mathExpression = mathExpression.Replace("let", "");
+                mathExpression = mathExpression.Replace(VariableDeclarator, "");
 
                 varValue = Parse(mathExpression);
 
