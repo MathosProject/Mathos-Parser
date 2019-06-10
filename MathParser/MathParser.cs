@@ -51,12 +51,12 @@ namespace Mathos.Parser
         /// <summary>
         /// The random number generator used to generate random values, when the random() operator is used
         /// </summary>
-        public Random Random { get; set; }
+        public Random Random { get; set; } = new Random();
 
         /// <summary>
         /// The string which is used to declare a variable. Default is "let"
         /// </summary>
-        public string VariableDeclarator { get; set; }
+        public string VariableDeclarator { get; set; } = "let";
 
         #endregion
 
@@ -68,10 +68,12 @@ namespace Mathos.Parser
         /// <param name="loadPreDefinedFunctions">This will load abs, cos, cosh, arccos, sin, sinh, arcsin, tan, tanh, arctan, sqrt, rem, round, and random.</param>
         /// <param name="loadPreDefinedVariables">This will load pi, tao, e, phi, major, minor, pitograd, and piofgrad.</param>
         /// <param name="cultureInfo">The culture info to use when parsing. If null, defaults to invariant culture.</param>
-        public MathParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true, CultureInfo cultureInfo = null)
+        public MathParser(
+            bool loadPreDefinedFunctions = true,
+            bool loadPreDefinedOperators = true,
+            bool loadPreDefinedVariables = true,
+            CultureInfo cultureInfo = null)
         {
-            VariableDeclarator = "let";
-            Random = new Random();
             if (loadPreDefinedOperators)
             {
                 Operators = new Dictionary<string, Func<double, double, double>>()
@@ -96,6 +98,7 @@ namespace Mathos.Parser
             {
                 Operators = new Dictionary<string, Func<double, double, double>>();
             }
+
             if (loadPreDefinedFunctions)
             {
                 LocalFunctions = new Dictionary<string, Func<double[], double>>()
@@ -165,6 +168,7 @@ namespace Mathos.Parser
             {
                 LocalFunctions = new Dictionary<string, Func<double[], double>>();
             }
+
             if (loadPreDefinedVariables)
             {
                 LocalVariables = new Dictionary<string, double>(8)
@@ -185,6 +189,7 @@ namespace Mathos.Parser
             {
                 LocalVariables = new Dictionary<string, double>();
             }
+
             CultureInfo = cultureInfo ?? CultureInfo.InvariantCulture;
         }
 
@@ -270,6 +275,7 @@ namespace Mathos.Parser
                 {
                     LocalVariables.Add(varName, varValue);
                 }
+
                 return varValue;
             }
 
@@ -293,6 +299,7 @@ namespace Mathos.Parser
             {
                 LocalVariables.Add(varName, varValue);
             }
+
             return varValue;
         }
 
@@ -364,6 +371,7 @@ namespace Mathos.Parser
                     {
                         token += expr[++i];
                     }
+
                     tokens.Add(token);
                     token = "";
 
@@ -378,6 +386,7 @@ namespace Mathos.Parser
                     {
                         token += expr[++i];
                     }
+
                     tokens.Add(token);
                     token = "";
 
@@ -392,6 +401,7 @@ namespace Mathos.Parser
                     {
                         token += expr[++i];
                     }
+
                     tokens.Add(token);
                     token = "";
 
@@ -414,6 +424,7 @@ namespace Mathos.Parser
                     {
                         token += expr[++i];
                     }
+
                     tokens.Add(token);
                     token = "";
 
@@ -469,6 +480,7 @@ namespace Mathos.Parser
                 {
                     roughExpr.Add(tokens[i]);
                 }
+
                 double tmpResult;
 
                 var args = new List<double>();
@@ -491,6 +503,7 @@ namespace Mathos.Parser
                             {
                                 defaultExpr.Add(roughExpr[i++]);
                             }
+
                             args.Add(defaultExpr.Count == 0 ? 0 : BasicArithmeticalExpression(defaultExpr));
                         }
 
@@ -542,6 +555,7 @@ namespace Mathos.Parser
 
             double token0;
             double token1;
+
             switch (tokens.Count)
             {
                 case 1:
@@ -549,6 +563,7 @@ namespace Mathos.Parser
                     {
                         throw new MathParserException("local variable " + tokens[0] + " is undefined");
                     }
+
                     return token0;
                 case 2:
                     var op = tokens[0];
@@ -561,6 +576,7 @@ namespace Mathos.Parser
                         {
                             throw new MathParserException("local variable " + first + tokens[1] + " is undefined");
                         }
+
                         return token1;
                     }
 
@@ -568,10 +584,12 @@ namespace Mathos.Parser
                     {
                         throw new MathParserException("operator " + op + " is not defined");
                     }
+
                     if (!double.TryParse(tokens[1], NumberStyles.Number, CultureInfo, out token1))
                     {
                         throw new MathParserException("local variable " + tokens[1] + " is undefined");
                     }
+
                     return Operators[op](0, token1);
                 case 0:
                     return 0;
@@ -584,6 +602,7 @@ namespace Mathos.Parser
                 while ((opPlace = tokens.IndexOf(op.Key)) != -1)
                 {
                     double rhs;
+
                     if (!double.TryParse(tokens[opPlace + 1], NumberStyles.Number, CultureInfo, out rhs))
                     {
                         throw new MathParserException("local variable " + tokens[opPlace + 1] + " is undefined");
@@ -598,6 +617,7 @@ namespace Mathos.Parser
                     else
                     {
                         double lhs;
+
                         if (!double.TryParse(tokens[opPlace - 1], NumberStyles.Number, CultureInfo, out lhs))
                         {
                             throw new MathParserException("local variable " + tokens[opPlace - 1] + " is undefined");
@@ -614,6 +634,7 @@ namespace Mathos.Parser
             {
                 throw new MathParserException("local variable " + tokens[0] + " is undefined");
             }
+
             return token0;
         }
 
