@@ -640,22 +640,4 @@ namespace Mathos.Parser
 
         #endregion
     }
-
-    public class MathParserException : Exception
-    {
-        public MathParserException() : base()
-        {
-
-        }
-
-        public MathParserException(string message): base(message)
-        {
-
-        }
-
-        public MathParserException(string message, Exception innerException): base(message, innerException)
-        {
-
-        }
-    }
 }
