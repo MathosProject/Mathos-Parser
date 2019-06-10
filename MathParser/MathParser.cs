@@ -48,18 +48,30 @@ namespace Mathos.Parser
         /// </summary>
         public CultureInfo CultureInfo { get; }
 
+        /// <summary>
+        /// The random number generator used to generate random values, when the random() operator is used
+        /// </summary>
+        public Random Random { get; set; }
+
+        /// <summary>
+        /// The string which is used to declare a variable. Default is "let"
+        /// </summary>
+        public string VariableDeclarator { get; set; }
+
         #endregion
 
         /// <summary>
         /// Initializes a new instance of the MathParser class, and optionally with
         /// predefined functions, operators, and variables.
         /// </summary>
-        /// <param name="loadPreDefinedFunctions">This will load abs, cos, cosh, arccos, sin, sinh, arcsin, tan, tanh, arctan, sqrt, rem, and round.</param>
         /// <param name="loadPreDefinedOperators">This will load %, *, :, /, +, -, >, &lt;, and =</param>
+        /// <param name="loadPreDefinedFunctions">This will load abs, cos, cosh, arccos, sin, sinh, arcsin, tan, tanh, arctan, sqrt, rem, round, and random.</param>
         /// <param name="loadPreDefinedVariables">This will load pi, tao, e, phi, major, minor, pitograd, and piofgrad.</param>
         /// <param name="cultureInfo">The culture info to use when parsing. If null, defaults to invariant culture.</param>
         public MathParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true, CultureInfo cultureInfo = null)
         {
+            VariableDeclarator = "let";
+            Random = new Random();
             if (loadPreDefinedOperators)
             {
                 Operators = new Dictionary<string, Func<double, double, double>>()
@@ -130,6 +142,20 @@ namespace Mathos.Parser
                             default:
                                 return 0;
                         }
+                    },
+
+                    ["random"] = inputs =>
+                    {
+                        if (inputs.Length == 0 || (inputs.Length == 1 && inputs[0] == 0))
+                        {
+                            inputs = new double[1];
+                            inputs[0] = 1;
+                        }
+                        if (inputs.Length == 2)
+                        {
+                            return Random.NextDouble() * (inputs[1] - inputs[0]) + inputs[0];
+                        }
+                        return Random.NextDouble() * inputs[0];
                     },
 
                     ["ln"] = inputs => Math.Log(inputs[0])
@@ -214,25 +240,25 @@ namespace Mathos.Parser
             string varName;
             double varValue;
 
-            if (mathExpression.Contains("let"))
+            if (mathExpression.Contains(VariableDeclarator))
             {
                 if (mathExpression.Contains("be"))
                 {
-                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3,
+                    varName = mathExpression.Substring(mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) + 3,
                         mathExpression.IndexOf("be", StringComparison.Ordinal) -
-                        mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
+                        mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) - 3);
                     mathExpression = mathExpression.Replace(varName + "be", "");
                 }
                 else
                 {
-                    varName = mathExpression.Substring(mathExpression.IndexOf("let", StringComparison.Ordinal) + 3,
+                    varName = mathExpression.Substring(mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) + 3,
                         mathExpression.IndexOf("=", StringComparison.Ordinal) -
-                        mathExpression.IndexOf("let", StringComparison.Ordinal) - 3);
+                        mathExpression.IndexOf(VariableDeclarator, StringComparison.Ordinal) - 3);
                     mathExpression = mathExpression.Replace(varName + "=", "");
                 }
 
                 varName = varName.Replace(" ", "");
-                mathExpression = mathExpression.Replace("let", "");
+                mathExpression = mathExpression.Replace(VariableDeclarator, "");
 
                 varValue = Parse(mathExpression);
 
@@ -385,8 +411,9 @@ namespace Mathos.Parser
                     token += ch;
 
                     while (i + 1 < expr.Length && (char.IsDigit(expr[i + 1]) || expr[i + 1] == '.'))
+                    {
                         token += expr[++i];
-
+                    }
                     tokens.Add(token);
                     token = "";
 
@@ -513,10 +540,16 @@ namespace Mathos.Parser
             // THIS METHOD CAN ONLY OPERATE WITH NUMBERS AND OPERATORS
             // AND WILL NOT UNDERSTAND ANYTHING BEYOND THAT.
 
+            double token0;
+            double token1;
             switch (tokens.Count)
             {
                 case 1:
-                    return double.Parse(tokens[0], CultureInfo);
+                    if (!double.TryParse(tokens[0], NumberStyles.Number, CultureInfo, out token0))
+                    {
+                        throw new MathParserException("local variable " + tokens[0] + " is undefined");
+                    }
+                    return token0;
                 case 2:
                     var op = tokens[0];
 
@@ -524,10 +557,22 @@ namespace Mathos.Parser
                     {
                         var first = op == "+" ? "" : (tokens[1].Substring(0, 1) == "-" ? "" : "-");
 
-                        return double.Parse(first + tokens[1], CultureInfo);
+                        if (!double.TryParse(first + tokens[1], NumberStyles.Number, CultureInfo, out token1))
+                        {
+                            throw new MathParserException("local variable " + first + tokens[1] + " is undefined");
+                        }
+                        return token1;
                     }
 
-                    return Operators[op](0, double.Parse(tokens[1], CultureInfo));
+                    if (!Operators.ContainsKey(op))
+                    {
+                        throw new MathParserException("operator " + op + " is not defined");
+                    }
+                    if (!double.TryParse(tokens[1], NumberStyles.Number, CultureInfo, out token1))
+                    {
+                        throw new MathParserException("local variable " + tokens[1] + " is undefined");
+                    }
+                    return Operators[op](0, token1);
                 case 0:
                     return 0;
             }
@@ -538,7 +583,11 @@ namespace Mathos.Parser
 
                 while ((opPlace = tokens.IndexOf(op.Key)) != -1)
                 {
-                    var rhs = double.Parse(tokens[opPlace + 1], CultureInfo);
+                    double rhs;
+                    if (!double.TryParse(tokens[opPlace + 1], NumberStyles.Number, CultureInfo, out rhs))
+                    {
+                        throw new MathParserException("local variable " + tokens[opPlace + 1] + " is undefined");
+                    }
 
                     if (op.Key == "-" && opPlace == 0)
                     {
@@ -548,16 +597,44 @@ namespace Mathos.Parser
                     }
                     else
                     {
-                        var result = op.Value(double.Parse(tokens[opPlace - 1], CultureInfo), rhs);
+                        double lhs;
+                        if (!double.TryParse(tokens[opPlace - 1], NumberStyles.Number, CultureInfo, out lhs))
+                        {
+                            throw new MathParserException("local variable " + tokens[opPlace - 1] + " is undefined");
+                        }
+
+                        var result = op.Value(lhs, rhs);
                         tokens[opPlace - 1] = result.ToString(CultureInfo);
                         tokens.RemoveRange(opPlace, 2);
                     }
                 }
             }
 
-            return double.Parse(tokens[0], CultureInfo);
+            if (!double.TryParse(tokens[0], NumberStyles.Number, CultureInfo, out token0))
+            {
+                throw new MathParserException("local variable " + tokens[0] + " is undefined");
+            }
+            return token0;
         }
 
         #endregion
+    }
+
+    public class MathParserException : Exception
+    {
+        public MathParserException() : base()
+        {
+
+        }
+
+        public MathParserException(string message): base(message)
+        {
+
+        }
+
+        public MathParserException(string message, Exception innerException): base(message, innerException)
+        {
+
+        }
     }
 }
