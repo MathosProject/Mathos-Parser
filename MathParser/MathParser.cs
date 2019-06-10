@@ -17,7 +17,7 @@ using System.Collections.Generic;
 namespace Mathos.Parser
 {
     /// <summary>
-    /// This is a mathematical expression parser that allows you to perform calculations on string values.
+    /// A mathematical expression parser and evaluator.
     /// </summary>
     public class MathParser
     {
