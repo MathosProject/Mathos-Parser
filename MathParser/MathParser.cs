@@ -80,8 +80,8 @@ namespace Mathos.Parser
                 {
                     ["^"] = Math.Pow,
                     ["%"] = (a, b) => a % b,
-                    [":"] = (a, b) => b == 0 ? 0 : a / b,
-                    ["/"] = (a, b) => b == 0 ? 0 : a / b,
+                    [":"] = (a, b) => Math.Abs(b) < 0.00000001 ? 0 : a / b,
+                    ["/"] = (a, b) => Math.Abs(b) < 0.00000001 ? 0 : a / b,
                     ["*"] = (a, b) => a * b,
                     ["-"] = (a, b) => a - b,
                     ["+"] = (a, b) => a + b,
