@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Mathos.Parser
@@ -102,7 +103,7 @@ namespace Mathos.Parser
             }
             catch (Exception e)
             {
-                throw new ScriptParserException(lineNumber, e);
+                throw new ScriptParserException(lineNumber + 1, e);
             }
             return lastOutput;
         }
