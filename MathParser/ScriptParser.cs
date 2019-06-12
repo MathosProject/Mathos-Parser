@@ -48,6 +48,11 @@ namespace Mathos.Parser
                 while (lineNumber < lines.Length)
                 {
                     var line = lines[lineNumber].Trim().ToLowerInvariant();
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        lineNumber++;
+                        continue;
+                    }
                     IfChainState currentState = IfChainState.Executing;
                     if (chainStates.Count > 0)
                     {
