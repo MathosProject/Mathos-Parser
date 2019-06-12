@@ -8,8 +8,9 @@ namespace Mathos.Parser
 {
     public class ScriptParser
     {
-        public IReadOnlyDictionary<string, double> LocalVariables { get { return mathParser.LocalVariables; } }
-        public IReadOnlyDictionary<string, Func<double, double, double>> Operators { get { return mathParser.Operators; } }
+        public Dictionary<string, double> LocalVariables { get { return mathParser.LocalVariables; } }
+        public Dictionary<string, Func<double, double, double>> Operators { get { return mathParser.Operators; } }
+        public Dictionary<string, Func<double[], double>> LocalFunctions { get { return mathParser.LocalFunctions; } }
 
         private MathParser mathParser;
         private BooleanParser booleanParser;
