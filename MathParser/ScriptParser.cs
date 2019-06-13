@@ -116,17 +116,11 @@ namespace Mathos.Parser
 
         private enum IfChainState
         {
-            /// <summary>
-            /// No if/else if in this chain has been executed yet, so the following else/else if can be executed
-            /// </summary>
+            // No if/else if in this chain has been executed yet, so the following else/else if can be executed
             NotExecuted = 0,
-            /// <summary>
-            /// The current if/else if/else in this chain is executing, so we execute any code found, and any following else/else if cannot be executed
-            /// </summary>
+            // The current if/else if/else in this chain is executing, so we execute any code found, and any following else/else if cannot be executed
             Executing = 1,
-            /// <summary>
-            /// The current if/else if/else is not executing, but a previous one did, so following else/else if cannot be executed
-            /// </summary>
+            // The current if/else if/else is not executing, but a previous one did, so following else/else if cannot be executed
             Executed = 2
         }
     }
