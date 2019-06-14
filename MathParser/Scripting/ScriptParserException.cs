@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Mathos.Parser
+namespace Mathos.Parser.Scripting
 {
     public sealed class ScriptParserException : Exception
     {

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Mathos.Parser
+namespace Mathos.Parser.Scripting
 {
     /// <summary>
     /// An implementation of <see cref="IScriptParserLog"/> that appends logs to a multiline string

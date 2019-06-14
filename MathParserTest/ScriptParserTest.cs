@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using Mathos.Parser.Scripting;
+
 namespace Mathos.Parser.Test
 {
     [TestClass]

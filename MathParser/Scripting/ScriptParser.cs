@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 
-namespace Mathos.Parser
+namespace Mathos.Parser.Scripting
 {
     public class ScriptParser
     {
