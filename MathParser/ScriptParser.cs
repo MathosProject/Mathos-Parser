@@ -11,13 +11,20 @@ namespace Mathos.Parser
         public Dictionary<string, double> LocalVariables { get { return mathParser.LocalVariables; } }
         public Dictionary<string, Func<double, double, double>> Operators { get { return mathParser.Operators; } }
         public Dictionary<string, Func<double[], double>> LocalFunctions { get { return mathParser.LocalFunctions; } }
+        public IScriptParserLog Logger { get; set; }
+        public string LogFunctionName { get; set; } = "print";
 
         private MathParser mathParser;
         private BooleanParser booleanParser;
-        public ScriptParser(bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true, CultureInfo cultureInfo = null)
+        public ScriptParser(IScriptParserLog logger = null, bool loadPreDefinedFunctions = true, bool loadPreDefinedOperators = true, bool loadPreDefinedVariables = true, CultureInfo cultureInfo = null)
         {
             mathParser = new MathParser(loadPreDefinedFunctions, loadPreDefinedOperators, loadPreDefinedVariables, cultureInfo);
             booleanParser = new BooleanParser(mathParser);
+            this.Logger = logger;
+            if (logger == null)
+            {
+                this.Logger = new NullScriptParserLog();
+            }
         }
 
         /// <summary>
@@ -101,7 +108,15 @@ namespace Mathos.Parser
                     {
                         if (currentState == IfChainState.Executing)
                         {
-                            lastOutput = mathParser.ProgrammaticallyParse(line);
+                            if (line.StartsWith(LogFunctionName + " ") || line.StartsWith(LogFunctionName + "(") || line.StartsWith(LogFunctionName + "\""))
+                            {
+                                string logExpression = line.Substring(LogFunctionName.Length).Trim();
+                                LogString(logExpression);
+                            }
+                            else
+                            {
+                                lastOutput = mathParser.ProgrammaticallyParse(line);
+                            }
                         }
                     }
                     lineNumber++;
@@ -112,6 +127,51 @@ namespace Mathos.Parser
                 throw new ScriptParserException(lineNumber + 1, e);
             }
             return lastOutput;
+        }
+
+        private void LogString(string expr)
+        {
+            if (expr[0] == '(')
+            {
+                int closingBracket = expr.LastIndexOf(')');
+                if (closingBracket < 0)
+                {
+                    throw new ScriptParserException("No matching closing bracket/parenthesis in print expression found");
+                }
+                expr = expr.Substring(1, closingBracket - 1);
+            }
+            string joinedString = "";
+            bool isString = false;
+            bool escapeNext = false;
+            string token = "";
+            for (var i = 0; i < expr.Length; i++)
+            {
+                var ch = expr[i];
+
+                if (ch == '"' && !escapeNext)
+                {
+                    if (!string.IsNullOrWhiteSpace(token))
+                    {
+                        joinedString += isString ? token : mathParser.ProgrammaticallyParse(token.Trim()).ToString(mathParser.CultureInfo);
+                    }
+                    token = "";
+                    isString = !isString;
+                }
+                else if (ch == '\\' && !escapeNext)
+                {
+                    escapeNext = true;
+                }
+                else
+                {
+                    token += ch;
+                    escapeNext = false;
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                joinedString += isString ? token : mathParser.ProgrammaticallyParse(token.Trim()).ToString(mathParser.CultureInfo);
+            }
+            Logger.Log(joinedString);
         }
 
         private enum IfChainState
