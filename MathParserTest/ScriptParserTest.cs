@@ -7,11 +7,13 @@ namespace Mathos.Parser.Test
     public class ScriptParserTest
     {
         private ScriptParser parser;
+        private MultilineScriptParserLog log;
 
         [TestInitialize]
         public void Initialize()
         {
-            parser = new ScriptParser();
+            log = new MultilineScriptParserLog();
+            parser = new ScriptParser(log);
         }
 
         [TestMethod]
@@ -219,6 +221,41 @@ namespace Mathos.Parser.Test
                 Assert.IsTrue(e.Message.ToLowerInvariant().Contains("foo") && e.Message.ToLowerInvariant().Contains("line 3"));
                 throw e;
             }
+        }
+
+        [TestMethod]
+        public void Logs()
+        {
+            string[] lines1 = new string[]
+            {
+                "let abc = 123",
+                "print(\"abc: \" abc)"
+            };
+            string[] lines2 = new string[]
+            {
+                "let x = 42",
+                "print \"answer (\" x \") = 6 * 9"
+            };
+            string[] lines3 = new string[]
+            {
+                "let x = 5 * 5",
+                "if x == 5 ^ 2",
+                    "print(\"math works, see \" 5 ^ 2)",
+                "else",
+                    "print(\"huh?\")",
+                "end if"
+            };
+
+            parser.ExecuteLines(lines1);
+            Assert.AreEqual("abc: 123", log.Output);
+
+            log.Clear();
+            parser.ExecuteLines(lines2);
+            Assert.AreEqual("answer (42) = 6 * 9", log.Output);
+
+            log.Clear();
+            parser.ExecuteLines(lines3);
+            Assert.AreEqual("math works, see 25", log.Output);
         }
     }
 }
