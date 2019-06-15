@@ -34,6 +34,10 @@ end if
 * Simplified some internal logic.
 * Other small changes and improvements.
 
+### Special Thanks
+dennisvg111
+Ctznkane525
+
 [18]: https://github.com/MathosProject/Mathos-Parser/issues/18
 [21]: https://github.com/MathosProject/Mathos-Parser/issues/21
 [20]: https://github.com/MathosProject/Mathos-Parser/issues/20
