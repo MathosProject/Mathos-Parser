@@ -2,7 +2,7 @@
  * Copyright (C) 2012-2019, Mathos Project.
  * All rights reserved.
  * 
- * Please see the license file in the project folder,
+ * Please see the license file in the project folder
  * or go to https://github.com/MathosProject/Mathos-Parser/blob/master/LICENSE.md.
  * 
  * Please feel free to ask me directly at my email!
@@ -21,7 +21,7 @@ namespace Mathos.Parser
     /// </summary>
     /// <remarks>
     /// This is considered the default parser for mathematical expressions and provides baseline functionality.
-    /// For more specialized parsers, see <seealso cref="BooleanParser"/> and <seealso cref="Mathos.Parser.Scripting.ScriptParser"/>.
+    /// For more specialized parsers, see <seealso cref="BooleanParser"/> and <seealso cref="Scripting.ScriptParser"/>.
     /// </remarks>
     public class MathParser
     {
@@ -202,7 +202,15 @@ namespace Mathos.Parser
         /// This method does not evaluate variable declarations.
         /// For a method that does, please use <see cref="ProgrammaticallyParse"/>.
         /// </remarks>
-        /// <param name="mathExpression">The mathematical expression to parse and evaluate.</param>
+        /// <example>
+        /// <code>
+        /// using System.Diagnostics;
+        /// 
+        /// var parser = new MathParser(false, true, false);
+        /// Debug.Assert(parser.Parse("2 + 2") == 4);
+        /// </code>
+        /// </example>
+        /// <param name="mathExpression">The math expression to parse and evaluate.</param>
         /// <returns>Returns the result of executing the given math expression.</returns>
         public double Parse(string mathExpression)
         {
@@ -216,11 +224,20 @@ namespace Mathos.Parser
         /// This method does not evaluate variable declarations.
         /// For a method that does, please use <see cref="ProgrammaticallyParse"/>.
         /// </remarks>
-        /// <param name="mathExpression">The math expression to parse in tokens.</param>
+        /// <example>
+        /// <code>
+        /// using System.Diagnostics;
+        /// 
+        /// var parser = new MathParser(false, true, false);
+        /// var tokens = parser.GetTokens("2 + 2");
+        /// Debug.Assert(parser.Parse(tokens) == 4);
+        /// </code>
+        /// </example>
+        /// <param name="tokens">The math expression in tokens to parse and evaluate.</param>
         /// <returns>Returns the result of executing the given math expression.</returns>
-        public double Parse(IReadOnlyCollection<string> mathExpression)
+        public double Parse(IReadOnlyCollection<string> tokens)
         {
-            return MathParserLogic(new List<string>(mathExpression));
+            return MathParserLogic(new List<string>(tokens));
         }
 
         /// <summary>
@@ -233,7 +250,17 @@ namespace Mathos.Parser
         /// This method evaluates comments and variable declarations.
         /// For a method that doesn't, please use either <see cref="Parse(string)"/> or <see cref="Parse(IReadOnlyCollection{string})"/>.
         /// </remarks>
-        /// <param name="mathExpression">The math expression to parse.</param>
+        /// <example>
+        /// <code>
+        /// using System.Diagnostics;
+        /// 
+        /// var parser = new MathParser(false, true, false);
+        /// parser.ProgrammaticallyParse("let my_var = 7");
+        /// 
+        /// Debug.Assert(parser.Parse("my_var - 3") == 4);
+        /// </code>
+        /// </example>
+        /// <param name="mathExpression">The math expression to parse and evaluate.</param>
         /// <param name="correctExpression">If true, attempt to correct any typos found in the expression.</param>
         /// <param name="identifyComments">If true, treat "#" as a single-line comment and treat "#{" and "}#" as multi-line comments.</param>
         /// <returns>Returns the result of executing the given math expression.</returns>
@@ -316,13 +343,21 @@ namespace Mathos.Parser
         }
 
         /// <summary>
-        /// Parse a mathematical expression.
+        /// Tokenize a mathematical expression.
         /// </summary>
         /// <remarks>
         /// This method does not evaluate the expression.
         /// For a method that does, please use one of the Parse methods.
         /// </remarks>
-        /// <param name="mathExpression">The math expression to parse.</param>
+        /// <example>
+        /// <code>
+        /// using System.Diagnostics;
+        /// 
+        /// var parser = new MathParser(false, true, false);
+        /// parser.GetTokens("2 + 2");
+        /// </code>
+        /// </example>
+        /// <param name="mathExpression">The math expression to tokenize.</param>
         /// <returns>Returns the tokens of the given math expression.</returns>
         public IReadOnlyCollection<string> GetTokens(string mathExpression)
         {
