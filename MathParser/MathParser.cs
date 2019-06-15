@@ -49,6 +49,7 @@ namespace Mathos.Parser
         /// <summary>
         /// The culture information to use when parsing expressions.
         /// </summary>
+        [Obsolete]
         public CultureInfo CultureInfo { get; set; }
 
         /// <summary>
