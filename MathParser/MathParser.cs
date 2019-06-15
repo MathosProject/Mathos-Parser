@@ -19,55 +19,57 @@ namespace Mathos.Parser
     /// <summary>
     /// A mathematical expression parser and evaluator.
     /// </summary>
+    /// <remarks>
+    /// This is considered the default parser for mathematical expressions and provides baseline functionality.
+    /// For more specialized parsers, see <seealso cref="BooleanParser"/> and <seealso cref="Mathos.Parser.Scripting.ScriptParser"/>.
+    /// </remarks>
     public class MathParser
     {
-        private const char GEQ_SIGN = (char)8805;
-        private const char LEQ_SIGN = (char)8804;
-        private const char NEQ_SIGN = (char)8800;
+        private const char GeqSign = (char) 8805;
+        private const char LeqSign = (char) 8804;
+        private const char NeqSign = (char) 8800;
 
         #region Properties
 
         /// <summary>
-        /// All operators that you want to define should be inside this property.
+        /// This contains all of the binary operators defined for the parser.
         /// </summary>
         public Dictionary<string, Func<double, double, double>> Operators { get; set; }
 
         /// <summary>
-        /// All functions that you want to define should be inside this property.
+        /// This contains all of the functions defined for the parser.
         /// </summary>
         public Dictionary<string, Func<double[], double>> LocalFunctions { get; set; }
 
         /// <summary>
-        /// All variables that you want to define should be inside this property.
+        /// This contains all of the variables defined for the parser.
         /// </summary>
         public Dictionary<string, double> LocalVariables { get; set; }
 
         /// <summary>
-        /// When converting the result from the Parse method or ProgrammaticallyParse method ToString(),
-        /// please use this culture info.
+        /// The culture information to use when parsing expressions.
         /// </summary>
-        public CultureInfo CultureInfo { get; }
+        public CultureInfo CultureInfo { get; set; }
 
         /// <summary>
-        /// The random number generator used to generate random values, when the random() operator is used
+        /// A random number generator that may be used by functions and operators.
         /// </summary>
         public Random Random { get; set; } = new Random();
 
         /// <summary>
-        /// The string which is used to declare a variable. Default is "let"
+        /// The keyword to use for variable declarations when parsing. The default value is "let".
         /// </summary>
         public string VariableDeclarator { get; set; } = "let";
 
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the MathParser class, and optionally with
-        /// predefined functions, operators, and variables.
+        /// Constructs a new <see cref="MathParser"/> with optional functions, operators, and variables.
         /// </summary>
-        /// <param name="loadPreDefinedOperators">This will load %, *, :, /, +, -, >, &lt;, and =</param>
-        /// <param name="loadPreDefinedFunctions">This will load abs, cos, cosh, arccos, sin, sinh, arcsin, tan, tanh, arctan, sqrt, rem, round, and random.</param>
-        /// <param name="loadPreDefinedVariables">This will load pi, tao, e, phi, major, minor, pitograd, and piofgrad.</param>
-        /// <param name="cultureInfo">The culture info to use when parsing. If null, defaults to invariant culture.</param>
+        /// <param name="loadPreDefinedFunctions">If true, the parser will be initialized with the functions abs, sqrt, pow, root, rem, sign, exp, floor, ceil, round, truncate, log, ln, random, and trigonometric functions.</param>
+        /// <param name="loadPreDefinedOperators">If true, the parser will be initialized with the operators ^, %, :, /, *, -, +, >, &lt;, &#8805;, &#8804;, &#8800;, and =.</param>
+        /// <param name="loadPreDefinedVariables">If true, the parser will be initialized with the variables pi, tao, e, phi, major, minor, pitograd, and piofgrad.</param>
+        /// <param name="cultureInfo">The culture information to use when parsing expressions. If null, the parser will use the invariant culture.</param>
         public MathParser(
             bool loadPreDefinedFunctions = true,
             bool loadPreDefinedOperators = true,
@@ -88,9 +90,9 @@ namespace Mathos.Parser
 
                     [">"] = (a, b) => a > b ? 1 : 0,
                     ["<"] = (a, b) => a < b ? 1 : 0,
-                    ["" + GEQ_SIGN] = (a, b) => a > b || Math.Abs(a - b) < 0.00000001 ? 1 : 0,
-                    ["" + LEQ_SIGN] = (a, b) => a < b || Math.Abs(a - b) < 0.00000001 ? 1 : 0,
-                    ["" + NEQ_SIGN] = (a, b) => Math.Abs(a - b) < 0.00000001 ? 0 : 1,
+                    ["" + GeqSign] = (a, b) => a > b || Math.Abs(a - b) < 0.00000001 ? 1 : 0,
+                    ["" + LeqSign] = (a, b) => a < b || Math.Abs(a - b) < 0.00000001 ? 1 : 0,
+                    ["" + NeqSign] = (a, b) => Math.Abs(a - b) < 0.00000001 ? 0 : 1,
                     ["="] = (a, b) => Math.Abs(a - b) < 0.00000001 ? 1 : 0
                 };
             }
@@ -194,37 +196,47 @@ namespace Mathos.Parser
         }
 
         /// <summary>
-        /// Enter the math expression in form of a string.
+        /// Parse and evaluate a mathematical expression.
         /// </summary>
-        /// <param name="mathExpression">The math expression to parse.</param>
-        /// <returns>The result of executing <paramref name="mathExpression"/>.</returns>
+        /// <remarks>
+        /// This method does not evaluate variable declarations.
+        /// For a method that does, please use <see cref="ProgrammaticallyParse"/>.
+        /// </remarks>
+        /// <param name="mathExpression">The mathematical expression to parse and evaluate.</param>
+        /// <returns>Returns the result of executing the given math expression.</returns>
         public double Parse(string mathExpression)
         {
             return MathParserLogic(Lexer(mathExpression));
         }
 
         /// <summary>
-        /// Enter the math expression in form of a list of tokens.
+        /// Evaluate a mathematical expression in the form of tokens.
         /// </summary>
-        /// <param name="mathExpression">The math expression to parse.</param>
-        /// <returns>The result of executing <paramref name="mathExpression"/>.</returns>
+        /// <remarks>
+        /// This method does not evaluate variable declarations.
+        /// For a method that does, please use <see cref="ProgrammaticallyParse"/>.
+        /// </remarks>
+        /// <param name="mathExpression">The math expression to parse in tokens.</param>
+        /// <returns>Returns the result of executing the given math expression.</returns>
         public double Parse(IReadOnlyCollection<string> mathExpression)
         {
             return MathParserLogic(new List<string>(mathExpression));
         }
 
         /// <summary>
-        /// Enter the math expression in form of a string. You might also add/edit variables using "let" keyword.
-        /// For example, "let sampleVariable = 2+2".
-        /// 
-        /// Another way of adding/editing a variable is to type "varName := 20"
-        /// 
-        /// Last way of adding/editing a variable is to type "let varName be 20"
+        /// Parse and evaluate a mathematical expression with comments and variable declarations taken into account.
         /// </summary>
+        /// <remarks>
+        /// The syntax for declaring/editing a variable is either "let a = 0", "let a be 0", or "let a := 0" where
+        /// "let" is the keyword specified by <see cref="VariableDeclarator"/>.
+        /// 
+        /// This method evaluates comments and variable declarations.
+        /// For a method that doesn't, please use either <see cref="Parse(string)"/> or <see cref="Parse(IReadOnlyCollection{string})"/>.
+        /// </remarks>
         /// <param name="mathExpression">The math expression to parse.</param>
-        /// <param name="correctExpression">If true, correct <paramref name="correctExpression"/> of any typos.</param>
-        /// <param name="identifyComments">If true, treat "#", "#{", and "}#" as comments.</param>
-        /// <returns>The result of executing <paramref name="mathExpression"/>.</returns>
+        /// <param name="correctExpression">If true, attempt to correct any typos found in the expression.</param>
+        /// <param name="identifyComments">If true, treat "#" as a single-line comment and treat "#{" and "}#" as multi-line comments.</param>
+        /// <returns>Returns the result of executing the given math expression.</returns>
         public double ProgrammaticallyParse(string mathExpression, bool correctExpression = true, bool identifyComments = true)
         {
             if (identifyComments)
@@ -304,10 +316,14 @@ namespace Mathos.Parser
         }
 
         /// <summary>
-        /// This will convert a string expression into a list of tokens that can be later executed by Parse or ProgrammaticallyParse methods.
+        /// Parse a mathematical expression.
         /// </summary>
-        /// <param name="mathExpression">The math expression to tokenize.</param>
-        /// <returns>The resulting tokens of <paramref name="mathExpression"/>.</returns>
+        /// <remarks>
+        /// This method does not evaluate the expression.
+        /// For a method that does, please use one of the Parse methods.
+        /// </remarks>
+        /// <param name="mathExpression">The math expression to parse.</param>
+        /// <returns>Returns the tokens of the given math expression.</returns>
         public IReadOnlyCollection<string> GetTokens(string mathExpression)
         {
             return Lexer(mathExpression);
@@ -315,11 +331,7 @@ namespace Mathos.Parser
 
         #region Core
 
-        /// <summary>
-        /// This will correct sqrt() and arctan() written in different ways only.
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        // This will correct sqrt() and arctan() typos.
         private string Correction(string input)
         {
             // Word corrections
@@ -331,11 +343,6 @@ namespace Mathos.Parser
             return input;
         }
 
-        /// <summary>
-        /// Tokenizes <paramref name="expr"/>.
-        /// </summary>
-        /// <param name="expr">The expression to tokenize.</param>
-        /// <returns>The tokens.</returns>
         private List<string> Lexer(string expr)
         {
             var token = "";
@@ -345,9 +352,9 @@ namespace Mathos.Parser
             expr = expr.Replace("-+", "-");
             expr = expr.Replace("--", "+");
             expr = expr.Replace("==", "=");
-            expr = expr.Replace(">=", "" + GEQ_SIGN);
-            expr = expr.Replace("<=", "" + LEQ_SIGN);
-            expr = expr.Replace("!=", "" + NEQ_SIGN);
+            expr = expr.Replace(">=", "" + GeqSign);
+            expr = expr.Replace("<=", "" + LeqSign);
+            expr = expr.Replace("!=", "" + NeqSign);
 
             for (var i = 0; i < expr.Length; i++)
             {
