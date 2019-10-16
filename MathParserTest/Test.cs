@@ -95,6 +95,16 @@ namespace Mathos.Parser.Test
             
             parser.LocalFunctions.Add("cube", inputs => inputs[0] * inputs[0] * inputs[0]);
             Assert.AreEqual(8, parser.Parse("cube(2)"));
+
+            parser.LocalFunctions.Add("constF", inputs => 12);
+            Assert.AreEqual(12, parser.Parse("constF()"));
+            Assert.AreEqual(144, parser.Parse("constF() * constF()"));
+
+            parser.LocalFunctions.Add("argCount", inputs => inputs.Length);
+            Assert.AreEqual(0, parser.Parse("argCount()"));
+            Assert.AreEqual(1, parser.Parse("argCount(1)"));
+            Assert.AreEqual(2, parser.Parse("argCount(argCount(1), -5)"));
+            Assert.AreEqual(2, parser.Parse("argCount(argCount(1, 0), argCount())"));
         }
         
         [TestMethod]

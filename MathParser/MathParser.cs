@@ -553,7 +553,7 @@ namespace Mathos.Parser
                 {
                     if (roughExpr.Contains(","))
                     {
-                        // converting all arguments into a decimal array
+                        // converting all arguments into a double array
                         for (var i = 0; i < roughExpr.Count; i++)
                         {
                             var defaultExpr = new List<string>();
@@ -575,11 +575,15 @@ namespace Mathos.Parser
                     }
                     else
                     {
-                        // but if we only have one argument, then we pass it directly to the function
-                        tmpResult = double.Parse(LocalFunctions[functionName](new[]
+                        if (roughExpr.Count == 0)
+                            tmpResult = LocalFunctions[functionName](new double[0]);
+                        else
                         {
-                            BasicArithmeticalExpression(roughExpr)
-                        }).ToString(CultureInfo), CultureInfo);
+                            tmpResult = double.Parse(LocalFunctions[functionName](new[]
+                            {
+                                BasicArithmeticalExpression(roughExpr)
+                            }).ToString(CultureInfo), CultureInfo);
+                        }
                     }
                 }
                 else
