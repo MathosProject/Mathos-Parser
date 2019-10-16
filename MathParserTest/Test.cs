@@ -28,6 +28,20 @@ namespace Mathos.Parser.Test
         }
 
         [TestMethod]
+        public void DivideByZero()
+        {
+            var parser = new MathParser();
+            
+            Assert.AreEqual(double.PositiveInfinity, parser.Parse("5 / 0"));
+            Assert.AreEqual(double.NegativeInfinity, parser.Parse("(-30) / 0"));
+            Assert.AreEqual(double.NaN, parser.Parse("0 / 0"));
+
+            Assert.AreEqual(double.PositiveInfinity, parser.Parse("5 : 0"));
+            Assert.AreEqual(double.NegativeInfinity, parser.Parse("(-30) : 0"));
+            Assert.AreEqual(double.NaN, parser.Parse("0 : 0"));
+        }
+
+        [TestMethod]
         public void ConditionalStatements()
         {
             var parser = new MathParser();

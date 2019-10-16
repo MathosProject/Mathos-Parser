@@ -79,12 +79,32 @@ namespace Mathos.Parser
         {
             if (loadPreDefinedOperators)
             {
-                Operators = new Dictionary<string, Func<double, double, double>>()
+                Operators = new Dictionary<string, Func<double, double, double>>
                 {
                     ["^"] = Math.Pow,
                     ["%"] = (a, b) => a % b,
-                    [":"] = (a, b) => Math.Abs(b) < 0.00000001 ? 0 : a / b,
-                    ["/"] = (a, b) => Math.Abs(b) < 0.00000001 ? 0 : a / b,
+                    [":"] = (a, b) =>
+                    {
+                        if (b != 0)
+                            return a / b;
+                        else if (a > 0)
+                            return double.PositiveInfinity;
+                        else if (a < 0)
+                            return double.NegativeInfinity;
+                        else
+                            return double.NaN;
+                    },
+                    ["/"] = (a, b) =>
+                    {
+                        if (b != 0)
+                            return a / b;
+                        else if (a > 0)
+                            return double.PositiveInfinity;
+                        else if (a < 0)
+                            return double.NegativeInfinity;
+                        else
+                            return double.NaN;
+                    },
                     ["*"] = (a, b) => a * b,
                     ["-"] = (a, b) => a - b,
                     ["+"] = (a, b) => a + b,
@@ -104,7 +124,7 @@ namespace Mathos.Parser
 
             if (loadPreDefinedFunctions)
             {
-                LocalFunctions = new Dictionary<string, Func<double[], double>>()
+                LocalFunctions = new Dictionary<string, Func<double[], double>>
                 {
                     ["abs"] = inputs => Math.Abs(inputs[0]),
 
@@ -174,7 +194,7 @@ namespace Mathos.Parser
 
             if (loadPreDefinedVariables)
             {
-                LocalVariables = new Dictionary<string, double>(8)
+                LocalVariables = new Dictionary<string, double>
                 {
                     ["pi"] = 3.14159265358979,
                     ["tao"] = 6.28318530717959,
