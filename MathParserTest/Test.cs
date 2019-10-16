@@ -16,6 +16,7 @@ namespace Mathos.Parser.Test
             Assert.AreEqual(7, parser.Parse("5 + 2"));
             Assert.AreEqual(11, parser.Parse("5 + 2 * 3"));
             Assert.AreEqual(17, parser.Parse("27 - 3 * 3 + 1 - 4 / 2"));
+            Assert.AreEqual(282429536481, parser.Parse("(27 ^ 2) ^ 4"));
         }
         
         [TestMethod]
