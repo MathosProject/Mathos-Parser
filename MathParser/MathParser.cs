@@ -305,7 +305,7 @@ namespace Mathos.Parser
             string varName;
             double varValue;
 
-            if (mathExpression.Contains(VariableDeclarator))
+            if (System.Text.RegularExpressions.Regex.IsMatch(mathExpression, @"\b" + VariableDeclarator + @"\b"))
             {
                 if (mathExpression.Contains("be"))
                 {
